@@ -19,6 +19,7 @@ interface ProjectColumnProps {
   onChangeProjectStatus: (projectId: string, status: ProjectStatus) => void;
   onDeleteProject: (projectId: string) => void;
   onCycleFriction: (taskId: string, current: FrictionLevel) => void;
+  onUpdateTask: (taskId: string, text: string, friction: FrictionLevel) => void;
 }
 
 export const ProjectColumn: React.FC<ProjectColumnProps> = ({
@@ -36,7 +37,8 @@ export const ProjectColumn: React.FC<ProjectColumnProps> = ({
   onToggleToday,
   onChangeProjectStatus,
   onDeleteProject,
-  onCycleFriction
+  onCycleFriction,
+  onUpdateTask
 }) => {
   return (
     <div className="space-y-4">
@@ -58,6 +60,7 @@ export const ProjectColumn: React.FC<ProjectColumnProps> = ({
             onChangeProjectStatus={onChangeProjectStatus}
             onDeleteProject={onDeleteProject}
             onCycleFriction={onCycleFriction}
+            onUpdateTask={onUpdateTask}
           />
         ))}
         {projects.length === 0 && <div className="text-xs text-slate-400 text-center py-8 border border-dashed border-slate-200 rounded-lg">{emptyMessage}</div>}

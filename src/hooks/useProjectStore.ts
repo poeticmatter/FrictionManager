@@ -96,6 +96,10 @@ export const useProjectStore = () => {
     setTasks(tasks.map(t => t.id === taskId ? { ...t, friction: nextLevel } : t));
   };
 
+  const updateTask = (taskId: string, text: string, friction: FrictionLevel) => {
+    setTasks(tasks.map(t => t.id === taskId ? { ...t, text, friction } : t));
+  };
+
   // Export / Import Logic
   const handleExport = () => {
     const data: BackupData = {
@@ -140,6 +144,7 @@ export const useProjectStore = () => {
     deleteTask,
     toggleToday,
     cycleFriction,
+    updateTask,
     handleExport,
     handleImport,
   };

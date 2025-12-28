@@ -14,6 +14,7 @@ interface ProjectCardProps {
   onChangeProjectStatus: (projectId: string, status: ProjectStatus) => void;
   onDeleteProject: (projectId: string) => void;
   onCycleFriction: (taskId: string, current: FrictionLevel) => void;
+  onUpdateTask?: (taskId: string, text: string, friction: FrictionLevel) => void;
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -25,7 +26,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   onToggleToday,
   onChangeProjectStatus,
   onDeleteProject,
-  onCycleFriction
+  onCycleFriction,
+  onUpdateTask
 }) => {
   const [newTaskText, setNewTaskText] = useState('');
   const [newTaskFriction, setNewTaskFriction] = useState<FrictionLevel>('low');
@@ -149,6 +151,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 onDelete={onDeleteTask}
                 onToggleToday={onToggleToday}
                 onCycleFriction={onCycleFriction}
+                onUpdate={onUpdateTask}
               />
             ))}
           </div>

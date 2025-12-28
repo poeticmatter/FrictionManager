@@ -14,6 +14,7 @@ import { FRICTION_CONFIG } from './config';
 import { ProjectColumn } from './components/ProjectColumn';
 import { DataTools } from './components/DataTools';
 import { FrictionBadge } from './components/FrictionBadge';
+import { TaskItem } from './components/TaskItem';
 
 export default function App() {
   const {
@@ -31,6 +32,7 @@ export default function App() {
     deleteTask,
     toggleToday,
     cycleFriction,
+    updateTask,
     handleExport,
     handleImport,
   } = useProjectStore();
@@ -118,6 +120,7 @@ export default function App() {
             onChangeProjectStatus={updateProjectStatus}
             onDeleteProject={deleteProject}
             onCycleFriction={cycleFriction}
+            onUpdateTask={updateTask}
           />
 
           <ProjectColumn
@@ -136,6 +139,7 @@ export default function App() {
             onChangeProjectStatus={updateProjectStatus}
             onDeleteProject={deleteProject}
             onCycleFriction={cycleFriction}
+            onUpdateTask={updateTask}
           />
 
           <ProjectColumn
@@ -154,6 +158,7 @@ export default function App() {
             onChangeProjectStatus={updateProjectStatus}
             onDeleteProject={deleteProject}
             onCycleFriction={cycleFriction}
+            onUpdateTask={updateTask}
           />
 
           <div className="lg:sticky lg:top-6 space-y-4">
@@ -178,30 +183,15 @@ export default function App() {
                   tasksForToday.map(task => {
                     const project = projects.find(p => p.id === task.projectId);
                     return (
-                      <div key={task.id} className="p-3 bg-white border border-amber-100 rounded-lg shadow-sm group">
-                        <div className="flex items-start gap-2">
-                          <button 
-                            onClick={() => toggleTask(task.id)}
-                            className="mt-0.5 text-slate-300 hover:text-emerald-500 transition-colors"
-                          >
-                            <Circle size={16} />
-                          </button>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-slate-800 leading-snug break-words">{task.text}</p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <span className="text-[10px] text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded truncate max-w-[100px]">
-                                {project?.name}
-                              </span>
-                              <FrictionBadge level={task.friction} />
-                            </div>
-                          </div>
-                          <button 
-                            onClick={() => toggleToday(task.id)}
-                            className="text-amber-400 hover:text-slate-300 transition-colors opacity-0 group-hover:opacity-100"
-                          >
-                            <X size={14} />
-                          </button>
-                        </div>
+                      <div key={task.id} className="bg-white border border-amber-100 rounded-lg shadow-sm overflow-hidden">
+                        <TaskItem
+                          task={task}
+                          onToggle={toggleTask}
+                          onDelete={deleteTask}
+                          onToggleToday={toggleToday}
+                          onUpdate={updateTask}
+                          projectName={project?.name}
+                        />
                       </div>
                     );
                   })
