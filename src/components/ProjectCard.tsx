@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
-import { ChevronUp, ChevronDown, Trash2, Plus, Eye, EyeOff, Gauge } from 'lucide-react';
-import type { Project, Task, FrictionLevel, ProjectStatus } from '../types';
-import { FRICTION_CONFIG, STATUS_CONFIG } from '../config';
-import { TaskItem } from './TaskItem';
+import React, { useState } from "react";
+import {
+  ChevronUp,
+  ChevronDown,
+  Trash2,
+  Plus,
+  Eye,
+  EyeOff,
+  Gauge,
+} from "lucide-react";
+import type { Project, Task, FrictionLevel, ProjectStatus } from "../types";
+import { FRICTION_CONFIG, STATUS_CONFIG } from "../config";
+import { TaskItem } from "./TaskItem";
 
 interface ProjectCardProps {
   project: Project;
@@ -14,7 +22,11 @@ interface ProjectCardProps {
   onChangeProjectStatus: (projectId: string, status: ProjectStatus) => void;
   onDeleteProject: (projectId: string) => void;
   onCycleFriction: (taskId: string, current: FrictionLevel) => void;
-  onUpdateTask?: (taskId: string, text: string, friction: FrictionLevel) => void;
+  onUpdateTask?: (
+    taskId: string,
+    text: string,
+    friction: FrictionLevel
+  ) => void;
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -27,36 +39,45 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   onChangeProjectStatus,
   onDeleteProject,
   onCycleFriction,
-  onUpdateTask
+  onUpdateTask,
 }) => {
-  const [newTaskText, setNewTaskText] = useState('');
-  const [newTaskFriction, setNewTaskFriction] = useState<FrictionLevel>('low');
+  const [newTaskText, setNewTaskText] = useState("");
+  const [newTaskFriction, setNewTaskFriction] = useState<FrictionLevel>("low");
   const [isExpanded, setIsExpanded] = useState(true);
   const [showCompleted, setShowCompleted] = useState(false);
 
-  const openTasks = tasks.filter(t => !t.completed);
-  const completedTasks = tasks.filter(t => t.completed);
+  const openTasks = tasks.filter((t) => !t.completed);
+  const completedTasks = tasks.filter((t) => t.completed);
 
-  const frictionScore = openTasks.reduce((acc, task) => acc + FRICTION_CONFIG[task.friction].score, 0);
+  const frictionScore = openTasks.reduce(
+    (acc, task) => acc + FRICTION_CONFIG[task.friction].score,
+    0
+  );
 
   const maxFriction = 20;
   const frictionPercentage = Math.min((frictionScore / maxFriction) * 100, 100);
-  let frictionBarColor = 'bg-emerald-400';
-  if (frictionScore > 5) frictionBarColor = 'bg-amber-400';
-  if (frictionScore > 12) frictionBarColor = 'bg-rose-400';
+  let frictionBarColor = "bg-emerald-400";
+  if (frictionScore > 5) frictionBarColor = "bg-amber-400";
+  if (frictionScore > 12) frictionBarColor = "bg-rose-400";
 
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTaskText.trim()) return;
     onAddTask(project.id, newTaskText, newTaskFriction);
-    setNewTaskText('');
+    setNewTaskText("");
   };
 
   return (
-    <div className={`
+    <div
+      className={`
       relative group flex flex-col bg-white rounded-xl shadow-sm border overflow-hidden transition-all duration-300
-      ${project.status === 'hot' ? 'border-orange-200 shadow-md' : 'border-slate-200'}
-    `}>
+      ${
+        project.status === "hot"
+          ? "border-orange-200 shadow-md"
+          : "border-slate-200"
+      }
+    `}
+    >
       <div className="p-3 flex items-center justify-between border-b border-slate-50 bg-white">
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <button
@@ -67,14 +88,20 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           </button>
 
           <div className="flex flex-col min-w-0">
-            <h3 className="font-bold text-slate-800 text-base truncate pr-2">{project.name}</h3>
+            <h3 className="font-bold text-slate-800 text-base truncate pr-2">
+              {project.name}
+            </h3>
             <div className="flex items-center gap-2">
-               <div className="relative group/status inline-block">
-                <button className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${STATUS_CONFIG[project.status].bg} ${STATUS_CONFIG[project.status].color}`}>
+              <div className="relative group/status inline-block">
+                <button
+                  className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${
+                    STATUS_CONFIG[project.status].bg
+                  } ${STATUS_CONFIG[project.status].color}`}
+                >
                   {STATUS_CONFIG[project.status].label}
                 </button>
                 <div className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-10 hidden group-hover/status:flex flex-col p-1 w-24">
-                  {(Object.keys(STATUS_CONFIG) as ProjectStatus[]).map(s => (
+                  {(Object.keys(STATUS_CONFIG) as ProjectStatus[]).map((s) => (
                     <button
                       key={s}
                       onClick={() => onChangeProjectStatus(project.id, s)}
@@ -86,7 +113,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 </div>
               </div>
 
-              <span className="text-[10px] text-slate-400 flex items-center gap-1 font-medium" title="Friction Score">
+              <span
+                className="text-[10px] text-slate-400 flex items-center gap-1 font-medium"
+                title="Friction Score"
+              >
                 <Gauge size={10} /> {frictionScore}
               </span>
             </div>
@@ -95,7 +125,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
         <button
           onClick={() => onDeleteProject(project.id)}
-          className="text-slate-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity p-1"
+          className="text-slate-500 hover:text-red-400"
         >
           <Trash2 size={14} />
         </button>
@@ -119,20 +149,26 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               className="flex-1 text-xs px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
             />
             <div className="flex bg-slate-50 p-0.5 rounded-md border border-slate-100">
-              {(['none', 'low', 'moderate', 'high'] as FrictionLevel[]).map((level) => (
-                <button
-                  key={level}
-                  type="button"
-                  onClick={() => setNewTaskFriction(level)}
-                  className={`
+              {(["none", "low", "moderate", "high"] as FrictionLevel[]).map(
+                (level) => (
+                  <button
+                    key={level}
+                    type="button"
+                    onClick={() => setNewTaskFriction(level)}
+                    className={`
                     w-5 h-5 flex items-center justify-center rounded text-[8px] font-bold transition-all
-                    ${newTaskFriction === level ? 'bg-white shadow-sm text-indigo-600 border border-slate-100' : 'text-slate-300 hover:text-slate-500'}
+                    ${
+                      newTaskFriction === level
+                        ? "bg-white shadow-sm text-indigo-600 border border-slate-100"
+                        : "text-slate-300 hover:text-slate-500"
+                    }
                   `}
-                  title={level}
-                >
-                  {level[0].toUpperCase()}
-                </button>
-              ))}
+                    title={level}
+                  >
+                    {level[0].toUpperCase()}
+                  </button>
+                )
+              )}
             </div>
             <button
               type="submit"
@@ -143,7 +179,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           </form>
 
           <div className="space-y-1.5">
-            {openTasks.map(task => (
+            {openTasks.map((task) => (
               <TaskItem
                 key={task.id}
                 task={task}
@@ -162,12 +198,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               className="w-full flex items-center justify-center gap-1.5 text-[10px] font-medium text-slate-400 hover:text-slate-600 py-1 rounded hover:bg-slate-50 transition-colors"
             >
               {showCompleted ? <EyeOff size={12} /> : <Eye size={12} />}
-              {showCompleted ? 'Hide' : 'Show'} Completed ({completedTasks.length})
+              {showCompleted ? "Hide" : "Show"} Completed (
+              {completedTasks.length})
             </button>
 
             {showCompleted && completedTasks.length > 0 && (
-              <div className="mt-2 space-y-1 opacity-60">
-                {completedTasks.map(task => (
+              <div className="mt-2 space-y-1">
+                {completedTasks.map((task) => (
                   <TaskItem
                     key={task.id}
                     task={task}
