@@ -193,7 +193,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                   key={level}
                   onClick={() => setEditedFriction(level)}
                   className={`
-                  w-5 h-5 flex items-center justify-center rounded transition-all
+                  p-0.5 rounded transition-all
                   ${
                     editedFriction === level
                       ? `bg-white shadow-sm ${activeColor} border border-slate-200`

@@ -241,7 +241,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                         type="button"
                         onClick={() => setNewTaskFriction(level)}
                         className={`
-                      w-5 h-5 flex items-center justify-center rounded transition-all
+                      p-0.5 rounded transition-all
                       ${
                         newTaskFriction === level
                           ? `bg-white shadow-sm ${activeColor} border border-slate-100`
