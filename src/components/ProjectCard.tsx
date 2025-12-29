@@ -10,6 +10,10 @@ import {
   Flame,
   Snowflake,
   Lightbulb,
+  Wifi,
+  WifiHigh,
+  WifiLow,
+  WifiZero,
 } from "lucide-react";
 import type { Project, Task, FrictionLevel, ProjectStatus } from "../types";
 import { FRICTION_CONFIG, STATUS_CONFIG } from "../config";
@@ -216,24 +220,40 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
               />
               <div className="flex bg-slate-50 p-0.5 rounded-md border border-slate-100">
                 {(["none", "low", "moderate", "high"] as FrictionLevel[]).map(
-                  (level) => (
-                    <button
-                      key={level}
-                      type="button"
-                      onClick={() => setNewTaskFriction(level)}
-                      className={`
-                      w-5 h-5 flex items-center justify-center rounded text-[8px] font-bold transition-all
+                  (level) => {
+                    const Icon = {
+                      none: WifiZero,
+                      low: WifiLow,
+                      moderate: WifiHigh,
+                      high: Wifi,
+                    }[level];
+
+                    const activeColor = {
+                      none: "text-gray-400",
+                      low: "text-emerald-400",
+                      moderate: "text-amber-400",
+                      high: "text-rose-500",
+                    }[level];
+
+                    return (
+                      <button
+                        key={level}
+                        type="button"
+                        onClick={() => setNewTaskFriction(level)}
+                        className={`
+                      w-5 h-5 flex items-center justify-center rounded transition-all
                       ${
                         newTaskFriction === level
-                          ? "bg-white shadow-sm text-indigo-600 border border-slate-100"
-                          : "text-slate-300 hover:text-slate-500"
+                          ? `bg-white shadow-sm ${activeColor} border border-slate-100`
+                          : "text-slate-500 hover:text-slate-600"
                       }
                     `}
-                      title={level}
-                    >
-                      {level[0].toUpperCase()}
-                    </button>
-                  )
+                        title={level}
+                      >
+                        <Icon size={14} className="rotate-90" />
+                      </button>
+                    );
+                  }
                 )}
               </div>
               <button

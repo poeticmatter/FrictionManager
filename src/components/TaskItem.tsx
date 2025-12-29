@@ -6,6 +6,10 @@ import {
   Trash2,
   Pencil,
   Check,
+  Wifi,
+  WifiHigh,
+  WifiLow,
+  WifiZero,
 } from "lucide-react";
 import type { Task, FrictionLevel } from "../types";
 
@@ -169,23 +173,39 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       {isEditing && (
         <div className="flex gap-1 pl-6 mb-2">
           {(["none", "low", "moderate", "high"] as FrictionLevel[]).map(
-            (level) => (
-              <button
-                key={level}
-                onClick={() => setEditedFriction(level)}
-                className={`
-                  w-5 h-5 flex items-center justify-center rounded text-[8px] font-bold transition-all
+            (level) => {
+              const Icon = {
+                none: WifiZero,
+                low: WifiLow,
+                moderate: WifiHigh,
+                high: Wifi,
+              }[level];
+
+              const activeColor = {
+                none: "text-gray-400",
+                low: "text-emerald-400",
+                moderate: "text-amber-400",
+                high: "text-rose-500",
+              }[level];
+
+              return (
+                <button
+                  key={level}
+                  onClick={() => setEditedFriction(level)}
+                  className={`
+                  w-5 h-5 flex items-center justify-center rounded transition-all
                   ${
                     editedFriction === level
-                      ? "bg-white shadow-sm text-indigo-600 border border-slate-200"
-                      : "text-slate-300 hover:text-slate-500 border border-transparent"
+                      ? `bg-white shadow-sm ${activeColor} border border-slate-200`
+                      : "text-slate-500 hover:text-slate-600 border border-transparent"
                   }
                 `}
-                title={level}
-              >
-                {level[0].toUpperCase()}
-              </button>
-            )
+                  title={level}
+                >
+                  <Icon size={14} className="rotate-90" />
+                </button>
+              );
+            }
           )}
         </div>
       )}
