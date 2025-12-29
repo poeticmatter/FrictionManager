@@ -219,7 +219,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 
       {/* Friction Bar */}
       <div
-        className="absolute bottom-0 left-0 h-1 rounded-full transition-all duration-300"
+        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-1 rounded-full transition-all duration-300"
         style={{
           width: barStyle.width,
           backgroundColor: "transparent", // using className for color but width inline

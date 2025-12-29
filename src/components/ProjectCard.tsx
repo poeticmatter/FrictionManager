@@ -200,7 +200,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         </button>
       </div>
 
-      <div className="h-1 w-full bg-slate-100">
+      <div className="h-1 w-full bg-slate-100 flex justify-center">
         <div
           className={`h-full transition-all duration-500 ${barStyle.className}`}
           style={{ width: barStyle.width }}
