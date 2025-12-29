@@ -6,7 +6,6 @@ import {
   Plus,
   Eye,
   EyeOff,
-  Gauge,
 } from "lucide-react";
 import type { Project, Task, FrictionLevel, ProjectStatus } from "../types";
 import { FRICTION_CONFIG, STATUS_CONFIG } from "../config";
@@ -49,16 +48,34 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   const openTasks = tasks.filter((t) => !t.completed);
   const completedTasks = tasks.filter((t) => t.completed);
 
-  const frictionScore = openTasks.reduce(
-    (acc, task) => acc + FRICTION_CONFIG[task.friction].score,
-    0
-  );
+  // Find task with lowest friction score
+  let minScore = Infinity;
+  let minFrictionLevel: FrictionLevel = "none";
 
-  const maxFriction = 20;
-  const frictionPercentage = Math.min((frictionScore / maxFriction) * 100, 100);
-  let frictionBarColor = "bg-emerald-400";
-  if (frictionScore > 5) frictionBarColor = "bg-amber-400";
-  if (frictionScore > 12) frictionBarColor = "bg-rose-400";
+  if (openTasks.length > 0) {
+    openTasks.forEach((task) => {
+      const score = FRICTION_CONFIG[task.friction].score;
+      if (score < minScore) {
+        minScore = score;
+        minFrictionLevel = task.friction;
+      }
+    });
+  }
+
+  const getFrictionBarStyle = (level: FrictionLevel) => {
+    switch (level) {
+      case "none":
+        return { width: "25%", className: "bg-gray-300" };
+      case "low":
+        return { width: "50%", className: "bg-emerald-400" };
+      case "moderate":
+        return { width: "75%", className: "bg-amber-400" };
+      case "high":
+        return { width: "100%", className: "bg-rose-500" };
+    }
+  };
+
+  const barStyle = getFrictionBarStyle(minFrictionLevel);
 
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,13 +129,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                   ))}
                 </div>
               </div>
-
-              <span
-                className="text-[10px] text-slate-400 flex items-center gap-1 font-medium"
-                title="Friction Score"
-              >
-                <Gauge size={10} /> {frictionScore}
-              </span>
             </div>
           </div>
         </div>
@@ -133,8 +143,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
       <div className="h-1 w-full bg-slate-100">
         <div
-          className={`h-full transition-all duration-500 ${frictionBarColor}`}
-          style={{ width: `${frictionPercentage}%` }}
+          className={`h-full transition-all duration-500 ${barStyle.className}`}
+          style={{ width: barStyle.width }}
         />
       </div>
 

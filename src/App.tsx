@@ -4,16 +4,12 @@ import {
   Lightbulb, 
   Zap, 
   Layout,
-  Circle,
-  X
 } from 'lucide-react';
 
 import { useProjectStore } from './hooks/useProjectStore';
 import type { ProjectStatus } from './types';
-import { FRICTION_CONFIG } from './config';
 import { ProjectColumn } from './components/ProjectColumn';
 import { DataTools } from './components/DataTools';
-import { FrictionBadge } from './components/FrictionBadge';
 import { TaskItem } from './components/TaskItem';
 
 export default function App() {
@@ -60,10 +56,6 @@ export default function App() {
                 </h1>
                 <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
                    <span>{projects.length} Projects</span>
-                   <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                   <span className="text-amber-600 font-medium">
-                     {tasks.filter(t => !t.completed).reduce((acc, t) => acc + FRICTION_CONFIG[t.friction].score, 0)} Friction Pts
-                   </span>
                 </div>
               </div>
             </div>
