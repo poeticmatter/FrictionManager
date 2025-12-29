@@ -49,13 +49,13 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   const getFrictionBarStyle = (level: FrictionLevel) => {
     switch (level) {
       case "none":
-        return { width: "25%", className: "bg-gray-300" };
+        return { width: "25%", className: "bg-cyan-500" };
       case "low":
-        return { width: "50%", className: "bg-emerald-400" };
+        return { width: "50%", className: "bg-violet-500" };
       case "moderate":
-        return { width: "75%", className: "bg-amber-400" };
+        return { width: "75%", className: "bg-fuchsia-600" };
       case "high":
-        return { width: "100%", className: "bg-rose-500" };
+        return { width: "100%", className: "bg-rose-600" };
     }
   };
 
@@ -182,10 +182,17 @@ export const TaskItem: React.FC<TaskItemProps> = ({
               }[level];
 
               const activeColor = {
-                none: "text-gray-400",
-                low: "text-emerald-400",
-                moderate: "text-amber-400",
-                high: "text-rose-500",
+                none: "text-cyan-500",
+                low: "text-violet-500",
+                moderate: "text-fuchsia-600",
+                high: "text-rose-600",
+              }[level];
+
+              const hoverColor = {
+                none: "hover:text-cyan-500",
+                low: "hover:text-violet-500",
+                moderate: "hover:text-fuchsia-600",
+                high: "hover:text-rose-600",
               }[level];
 
               return (
@@ -193,11 +200,11 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                   key={level}
                   onClick={() => setEditedFriction(level)}
                   className={`
-                  p-0.5 rounded transition-all
+                  p-0.5 rounded transition-all border
                   ${
                     editedFriction === level
-                      ? `bg-white shadow-sm ${activeColor} border border-slate-200`
-                      : "text-slate-500 hover:text-slate-600 border border-transparent"
+                      ? `bg-white shadow-sm ${activeColor} border-slate-200`
+                      : `text-slate-500 ${hoverColor} border-slate-200 bg-transparent`
                   }
                 `}
                   title={level}
