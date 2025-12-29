@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Circle, Zap, CheckCircle2, Trash2, Pencil, Check } from "lucide-react";
+import {
+  CheckCircle,
+  Zap,
+  CheckCircle2,
+  Trash2,
+  Pencil,
+  Check,
+} from "lucide-react";
 import type { Task, FrictionLevel } from "../types";
 
 interface TaskItemProps {
@@ -82,9 +89,9 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       <div className="flex items-start gap-2 mb-2">
         <button
           onClick={() => onToggle(task.id)}
-          className="mt-0.5 text-slate-300 hover:text-emerald-500 transition-colors flex-shrink-0"
+          className="p-0.5 text-emerald-500 rounded transition-colors"
         >
-          <Circle size={16} />
+          <CheckCircle size={14} />
         </button>
 
         <div className="flex-1 min-w-0">
