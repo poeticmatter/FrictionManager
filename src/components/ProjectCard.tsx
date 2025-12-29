@@ -6,7 +6,7 @@ import {
   Plus,
   Eye,
   EyeOff,
-  Target,
+  ChevronsDown,
 } from "lucide-react";
 import type { Project, Task, FrictionLevel, ProjectStatus } from "../types";
 import { FRICTION_CONFIG, STATUS_CONFIG } from "../config";
@@ -111,9 +111,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
   const renderViewButton = () => {
     switch (viewState) {
-      case "collapsed": return <ChevronDown size={16} />;
-      case "lowest": return <Target size={16} />;
-      case "expanded": return <ChevronUp size={16} />;
+      case "collapsed": return <ChevronUp size={16} />;
+      case "lowest": return <ChevronDown size={16} />;
+      case "expanded": return <ChevronsDown size={16} />;
     }
   };
 
