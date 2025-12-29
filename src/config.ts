@@ -31,6 +31,6 @@ interface StatusConfigItem {
 
 export const STATUS_CONFIG: Record<ProjectStatus, StatusConfigItem> = {
   hot: { label: 'Hot', icon: Flame, color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-100' },
-  cold: { label: 'Cold', icon: Snowflake, color: 'text-slate-500', bg: 'bg-slate-50', border: 'border-slate-200' },
+  cold: { label: 'Cold', icon: Snowflake, color: 'text-sky-500', bg: 'bg-sky-50', border: 'border-sky-100' },
   idea: { label: 'Idea', icon: Lightbulb, color: 'text-blue-500', bg: 'bg-blue-50', border: 'border-blue-100' },
 };

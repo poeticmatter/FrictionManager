@@ -97,14 +97,14 @@ export default function App() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start h-full">
           
           <ProjectColumn
-            title="Hot"
-            icon={Flame}
-            iconColor="text-orange-500"
-            count={hotProjects.length}
-            projects={hotProjects}
+            title="Ideas"
+            icon={Lightbulb}
+            iconColor="text-blue-500"
+            count={ideaProjects.length}
+            projects={ideaProjects}
             tasks={tasks}
-            borderColor="border-orange-100"
-            emptyMessage="No active projects"
+            borderColor="border-blue-100"
+            emptyMessage="No ideas yet"
             onAddTask={addTask}
             onToggleTask={toggleTask}
             onDeleteTask={deleteTask}
@@ -118,11 +118,11 @@ export default function App() {
           <ProjectColumn
             title="Cold"
             icon={Snowflake}
-            iconColor="text-slate-400"
+            iconColor="text-sky-500"
             count={coldProjects.length}
             projects={coldProjects}
             tasks={tasks}
-            borderColor="border-slate-100"
+            borderColor="border-sky-100"
             emptyMessage="No cold projects"
             onAddTask={addTask}
             onToggleTask={toggleTask}
@@ -135,14 +135,14 @@ export default function App() {
           />
 
           <ProjectColumn
-            title="Ideas"
-            icon={Lightbulb}
-            iconColor="text-blue-500"
-            count={ideaProjects.length}
-            projects={ideaProjects}
+            title="Hot"
+            icon={Flame}
+            iconColor="text-orange-500"
+            count={hotProjects.length}
+            projects={hotProjects}
             tasks={tasks}
-            borderColor="border-blue-100"
-            emptyMessage="No ideas yet"
+            borderColor="border-orange-100"
+            emptyMessage="No active projects"
             onAddTask={addTask}
             onToggleTask={toggleTask}
             onDeleteTask={deleteTask}

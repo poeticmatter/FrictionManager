@@ -7,6 +7,9 @@ import {
   Eye,
   EyeOff,
   ChevronsDown,
+  Flame,
+  Snowflake,
+  Lightbulb,
 } from "lucide-react";
 import type { Project, Task, FrictionLevel, ProjectStatus } from "../types";
 import { FRICTION_CONFIG, STATUS_CONFIG } from "../config";
@@ -141,27 +144,46 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             <h3 className="font-bold text-slate-800 text-base truncate pr-2">
               {project.name}
             </h3>
-            <div className="flex items-center gap-2">
-              <div className="relative group/status inline-block">
-                <button
-                  className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${
-                    STATUS_CONFIG[project.status].bg
-                  } ${STATUS_CONFIG[project.status].color}`}
-                >
-                  {STATUS_CONFIG[project.status].label}
-                </button>
-                <div className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-10 hidden group-hover/status:flex flex-col p-1 w-24">
-                  {(Object.keys(STATUS_CONFIG) as ProjectStatus[]).map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => onChangeProjectStatus(project.id, s)}
-                      className="text-left px-2 py-1.5 text-xs text-slate-600 hover:bg-slate-50 rounded"
-                    >
-                      {STATUS_CONFIG[s].label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() =>
+                  project.status !== "idea" &&
+                  onChangeProjectStatus(project.id, "idea")
+                }
+                className={
+                  project.status === "idea"
+                    ? STATUS_CONFIG.idea.color
+                    : "text-slate-300 hover:text-slate-500"
+                }
+              >
+                <Lightbulb size={16} />
+              </button>
+              <button
+                onClick={() =>
+                  project.status !== "cold" &&
+                  onChangeProjectStatus(project.id, "cold")
+                }
+                className={
+                  project.status === "cold"
+                    ? STATUS_CONFIG.cold.color
+                    : "text-slate-300 hover:text-slate-500"
+                }
+              >
+                <Snowflake size={16} />
+              </button>
+              <button
+                onClick={() =>
+                  project.status !== "hot" &&
+                  onChangeProjectStatus(project.id, "hot")
+                }
+                className={
+                  project.status === "hot"
+                    ? STATUS_CONFIG.hot.color
+                    : "text-slate-300 hover:text-slate-500"
+                }
+              >
+                <Flame size={16} />
+              </button>
             </div>
           </div>
         </div>
