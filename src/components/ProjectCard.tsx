@@ -150,39 +150,39 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                   project.status !== "idea" &&
                   onChangeProjectStatus(project.id, "idea")
                 }
-                className={
+                className={`p-0.5 rounded ${
                   project.status === "idea"
                     ? STATUS_CONFIG.idea.color
                     : "text-slate-300 hover:text-slate-500"
-                }
+                }`}
               >
-                <Lightbulb size={16} />
+                <Lightbulb size={14} />
               </button>
               <button
                 onClick={() =>
                   project.status !== "cold" &&
                   onChangeProjectStatus(project.id, "cold")
                 }
-                className={
+                className={`p-0.5 rounded ${
                   project.status === "cold"
                     ? STATUS_CONFIG.cold.color
                     : "text-slate-300 hover:text-slate-500"
-                }
+                }`}
               >
-                <Snowflake size={16} />
+                <Snowflake size={14} />
               </button>
               <button
                 onClick={() =>
                   project.status !== "hot" &&
                   onChangeProjectStatus(project.id, "hot")
                 }
-                className={
+                className={`p-0.5 rounded ${
                   project.status === "hot"
                     ? STATUS_CONFIG.hot.color
                     : "text-slate-300 hover:text-slate-500"
-                }
+                }`}
               >
-                <Flame size={16} />
+                <Flame size={14} />
               </button>
             </div>
           </div>
