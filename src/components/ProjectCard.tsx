@@ -32,7 +32,8 @@ interface ProjectCardProps {
   onUpdateTask?: (
     taskId: string,
     text: string,
-    friction: FrictionLevel
+    friction: FrictionLevel,
+    blockedBy?: string | null
   ) => void;
 }
 
@@ -50,18 +51,31 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 }) => {
   const [newTaskText, setNewTaskText] = useState("");
   const [newTaskFriction, setNewTaskFriction] = useState<FrictionLevel>("low");
-  const [viewState, setViewState] = useState<"collapsed" | "lowest" | "expanded">("collapsed");
+  const [viewState, setViewState] = useState<
+    "collapsed" | "lowest" | "expanded"
+  >("collapsed");
   const [showCompleted, setShowCompleted] = useState(false);
 
   const openTasks = tasks.filter((t) => !t.completed);
   const completedTasks = tasks.filter((t) => t.completed);
 
-  // Find task with lowest friction score
+  // Helper to determine if a task is effectively blocked
+  const isEffectivelyBlocked = (task: Task): boolean => {
+    if (!task.blockedBy) return false;
+    const blocker = tasks.find((t) => t.id === task.blockedBy);
+    // If blocker not found, or blocker is completed, it's effectively unblocked
+    if (!blocker || blocker.completed) return false;
+    return true;
+  };
+
+  // Find task with lowest friction score among UNBLOCKED tasks
   let minScore = Infinity;
   let minFrictionLevel: FrictionLevel = "none";
 
-  if (openTasks.length > 0) {
-    openTasks.forEach((task) => {
+  const availableTasks = openTasks.filter((t) => !isEffectivelyBlocked(t));
+
+  if (availableTasks.length > 0) {
+    availableTasks.forEach((task) => {
       const score = FRICTION_CONFIG[task.friction].score;
       if (score < minScore) {
         minScore = score;
@@ -107,21 +121,107 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   };
 
   const getLowestFrictionTask = () => {
-    if (openTasks.length === 0) return null;
+    if (availableTasks.length === 0) return null;
 
-    // The lowest friction level (minFrictionLevel) is already calculated
-    // We need to filter openTasks for this level and sort by creation time
-    const lowestTasks = openTasks.filter(t => t.friction === minFrictionLevel);
+    // Filter availableTasks for the pre-calculated minFrictionLevel
+    const lowestTasks = availableTasks.filter(
+      (t) => t.friction === minFrictionLevel
+    );
     // Sort by createdAt ascending (oldest first)
     return lowestTasks.sort((a, b) => a.createdAt - b.createdAt)[0];
   };
 
   const renderViewButton = () => {
     switch (viewState) {
-      case "collapsed": return <ChevronUp size={16} />;
-      case "lowest": return <ChevronDown size={16} />;
-      case "expanded": return <ChevronsDown size={16} />;
+      case "collapsed":
+        return <ChevronUp size={16} />;
+      case "lowest":
+        return <ChevronDown size={16} />;
+      case "expanded":
+        return <ChevronsDown size={16} />;
     }
+  };
+
+  // Tree Rendering Logic
+  const renderTaskTree = (
+    rootTask: Task,
+    depth: number,
+    renderedIds: Set<string>
+  ): React.ReactNode => {
+    renderedIds.add(rootTask.id);
+    const children = openTasks.filter((t) => t.blockedBy === rootTask.id);
+    // Note: children are tasks explicitly blocked by this task.
+    // If this task is complete, it wouldn't be in openTasks, so this function wouldn't be called for it as a root.
+    // But if we are recursing, we are looking for open tasks blocked by THIS task.
+
+    return (
+      <React.Fragment key={rootTask.id}>
+        <TaskItem
+          task={rootTask}
+          onToggle={onToggleTask}
+          onDelete={onDeleteTask}
+          onToggleToday={onToggleToday}
+          onCycleFriction={onCycleFriction}
+          onUpdate={onUpdateTask}
+          possibleBlockers={openTasks.filter((t) => t.id !== rootTask.id)}
+          depth={depth}
+        />
+        {children.map((child) => renderTaskTree(child, depth + 1, renderedIds))}
+      </React.Fragment>
+    );
+  };
+
+  const renderOpenTasks = () => {
+    const renderedIds = new Set<string>();
+
+    // 1. Identify Roots: Tasks that are NOT effectively blocked by an open task.
+    // Basically, either blockedBy is null, OR blockedBy points to completed task.
+    // Since we are iterating openTasks, if blockedBy points to a completed task, it's effectively unblocked.
+    // If blockedBy points to an open task, it is blocked.
+    // So "roots" are those where !isEffectivelyBlocked(t).
+
+    // Note: If there's a cycle, they are all effectively blocked. They might not appear if we only render roots.
+    // To handle this, we render roots first, then anyone else not yet rendered (orphans/cycles).
+
+    const roots = openTasks.filter((t) => !isEffectivelyBlocked(t));
+
+    // Sort roots by creation time (or whatever default sort was)
+    // The original code rendered `openTasks` (array from props) which presumably was sorted or order preserved.
+    // We should probably respect creation order for roots.
+    const sortedRoots = roots.sort((a, b) => a.createdAt - b.createdAt);
+
+    const treeNodes = sortedRoots.map((root) =>
+      renderTaskTree(root, 0, renderedIds)
+    );
+
+    // Check for orphaned tasks (circular dependencies or data anomalies)
+    const orphans = openTasks.filter((t) => !renderedIds.has(t.id));
+
+    return (
+      <>
+        {treeNodes}
+        {orphans.length > 0 && (
+          <div className="border-t border-slate-100 pt-2 mt-2">
+            <div className="text-[10px] text-slate-400 mb-1 px-2">
+              Cycles / Orphans
+            </div>
+            {orphans.map((orphan) => (
+              <TaskItem
+                key={orphan.id}
+                task={orphan}
+                onToggle={onToggleTask}
+                onDelete={onDeleteTask}
+                onToggleToday={onToggleToday}
+                onCycleFriction={onCycleFriction}
+                onUpdate={onUpdateTask}
+                possibleBlockers={openTasks.filter((t) => t.id !== orphan.id)}
+                depth={0} // Render at root level
+              />
+            ))}
+          </div>
+        )}
+      </>
+    );
   };
 
   return (
@@ -210,7 +310,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       {viewState !== "collapsed" && (
         <div className="p-3 flex-1 flex flex-col gap-3">
           {viewState === "expanded" && (
-            <form onSubmit={handleAddTask} className="flex gap-1.5 items-center">
+            <form
+              onSubmit={handleAddTask}
+              className="flex gap-1.5 items-center"
+            >
               <input
                 type="text"
                 value={newTaskText}
@@ -274,17 +377,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
 
           <div className="space-y-1.5">
             {viewState === "expanded" ? (
-              openTasks.map((task) => (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  onToggle={onToggleTask}
-                  onDelete={onDeleteTask}
-                  onToggleToday={onToggleToday}
-                  onCycleFriction={onCycleFriction}
-                  onUpdate={onUpdateTask}
-                />
-              ))
+              renderOpenTasks()
             ) : (
               // Lowest view
               (() => {

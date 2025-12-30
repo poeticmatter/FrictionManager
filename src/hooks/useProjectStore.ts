@@ -89,6 +89,7 @@ export const useProjectStore = () => {
       isToday: false,
       completed: false,
       createdAt: Date.now(),
+      blockedBy: undefined,
     };
     setTasks([...tasks, task]);
   };
@@ -125,10 +126,23 @@ export const useProjectStore = () => {
   const updateTask = (
     taskId: string,
     text: string,
-    friction: FrictionLevel
+    friction: FrictionLevel,
+    blockedBy?: string | null
   ) => {
     setTasks(
-      tasks.map((t) => (t.id === taskId ? { ...t, text, friction } : t))
+      tasks.map((t) =>
+        t.id === taskId
+          ? {
+              ...t,
+              text,
+              friction,
+              blockedBy:
+                blockedBy === null
+                  ? undefined
+                  : blockedBy ?? t.blockedBy,
+            }
+          : t
+      )
     );
   };
 
