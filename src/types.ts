@@ -9,6 +9,7 @@ export interface Task {
   isToday: boolean;
   completed: boolean;
   createdAt: number;
+  blockedBy?: string;
 }
 
 export interface Project {

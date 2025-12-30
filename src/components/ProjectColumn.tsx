@@ -19,7 +19,12 @@ interface ProjectColumnProps {
   onChangeProjectStatus: (projectId: string, status: ProjectStatus) => void;
   onDeleteProject: (projectId: string) => void;
   onCycleFriction: (taskId: string, current: FrictionLevel) => void;
-  onUpdateTask: (taskId: string, text: string, friction: FrictionLevel) => void;
+  onUpdateTask: (
+    taskId: string,
+    text: string,
+    friction: FrictionLevel,
+    blockedBy?: string | null
+  ) => void;
 }
 
 export const ProjectColumn: React.FC<ProjectColumnProps> = ({

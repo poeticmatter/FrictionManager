@@ -10,6 +10,8 @@ import {
   WifiHigh,
   WifiLow,
   WifiZero,
+  CornerLeftUp,
+  Lock,
 } from "lucide-react";
 import type { Task, FrictionLevel } from "../types";
 
@@ -19,9 +21,16 @@ interface TaskItemProps {
   onDelete: (taskId: string) => void;
   onToggleToday?: (taskId: string) => void;
   onCycleFriction?: (taskId: string, current: FrictionLevel) => void;
-  onUpdate?: (taskId: string, text: string, friction: FrictionLevel) => void;
+  onUpdate?: (
+    taskId: string,
+    text: string,
+    friction: FrictionLevel,
+    blockedBy?: string | null
+  ) => void;
   showCompleted?: boolean;
   projectName?: string;
+  possibleBlockers?: Task[];
+  depth?: number;
 }
 
 export const TaskItem: React.FC<TaskItemProps> = ({
@@ -32,16 +41,23 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   onUpdate,
   showCompleted = false,
   projectName,
+  possibleBlockers = [],
+  depth = 0,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState(task.text);
   const [editedFriction, setEditedFriction] = useState<FrictionLevel>(
     task.friction
   );
+  const [editedBlockedBy, setEditedBlockedBy] = useState<string | undefined>(
+    task.blockedBy
+  );
+
+  const isBlocked = depth > 0;
 
   const handleSave = () => {
     if (editedText.trim() && onUpdate) {
-      onUpdate(task.id, editedText, editedFriction);
+      onUpdate(task.id, editedText, editedFriction, editedBlockedBy || null);
       setIsEditing(false);
     }
   };
@@ -88,7 +104,17 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   );
 
   return (
-    <div className="group/task relative flex flex-col p-2 bg-white hover:bg-slate-50 rounded-lg transition-colors border border-slate-100 hover:border-slate-200 overflow-hidden">
+    <div
+      className="group/task relative flex flex-col p-2 bg-white hover:bg-slate-50 rounded-lg transition-colors border border-slate-100 hover:border-slate-200"
+      style={{ marginLeft: `${depth * 1.5}rem` }}
+    >
+      {/* Blocked Indicator Arrow */}
+      {depth > 0 && (
+        <div className="absolute left-[-18px] top-3 text-slate-300">
+          <CornerLeftUp size={16} />
+        </div>
+      )}
+
       {/* Main Content Row */}
       <div className="flex items-start gap-2 mb-2">
         <button
@@ -122,10 +148,15 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         </div>
 
         <div className="flex flex-row items-end gap-1 flex-shrink-0">
-          {onToggleToday && (
-            <button
-              onClick={() => onToggleToday(task.id)}
-              className={`
+          {onToggleToday &&
+            (isBlocked ? (
+              <div className="p-0.5 text-slate-300" title="Blocked">
+                <Lock size={14} />
+              </div>
+            ) : (
+              <button
+                onClick={() => onToggleToday(task.id)}
+                className={`
                   p-0.5 rounded transition-colors
                   ${
                     task.isToday
@@ -133,11 +164,11 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                       : "text-slate-500 hover:text-amber-500"
                   }
                 `}
-              title="Do Today"
-            >
-              <Zap size={14} fill={task.isToday ? "currentColor" : "none"} />
-            </button>
-          )}
+                title="Do Today"
+              >
+                <Zap size={14} fill={task.isToday ? "currentColor" : "none"} />
+              </button>
+            ))}
 
           {onUpdate && (
             <button
@@ -147,6 +178,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                 } else {
                   setEditedText(task.text);
                   setEditedFriction(task.friction);
+                  setEditedBlockedBy(task.blockedBy);
                   setIsEditing(true);
                 }
               }}
@@ -171,35 +203,36 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 
       {/* Edit Mode Friction Selection */}
       {isEditing && (
-        <div className="flex gap-1 pl-6 mb-2">
-          {(["none", "low", "moderate", "high"] as FrictionLevel[]).map(
-            (level) => {
-              const Icon = {
-                none: WifiZero,
-                low: WifiLow,
-                moderate: WifiHigh,
-                high: Wifi,
-              }[level];
+        <div className="flex flex-col gap-2 pl-6 mb-2">
+          <div className="flex gap-1">
+            {(["none", "low", "moderate", "high"] as FrictionLevel[]).map(
+              (level) => {
+                const Icon = {
+                  none: WifiZero,
+                  low: WifiLow,
+                  moderate: WifiHigh,
+                  high: Wifi,
+                }[level];
 
-              const activeColor = {
-                none: "text-cyan-500",
-                low: "text-violet-500",
-                moderate: "text-fuchsia-600",
-                high: "text-rose-600",
-              }[level];
+                const activeColor = {
+                  none: "text-cyan-500",
+                  low: "text-violet-500",
+                  moderate: "text-fuchsia-600",
+                  high: "text-rose-600",
+                }[level];
 
-              const hoverColor = {
-                none: "hover:text-cyan-500",
-                low: "hover:text-violet-500",
-                moderate: "hover:text-fuchsia-600",
-                high: "hover:text-rose-600",
-              }[level];
+                const hoverColor = {
+                  none: "hover:text-cyan-500",
+                  low: "hover:text-violet-500",
+                  moderate: "hover:text-fuchsia-600",
+                  high: "hover:text-rose-600",
+                }[level];
 
-              return (
-                <button
-                  key={level}
-                  onClick={() => setEditedFriction(level)}
-                  className={`
+                return (
+                  <button
+                    key={level}
+                    onClick={() => setEditedFriction(level)}
+                    className={`
                   p-0.5 rounded transition-all border
                   ${
                     editedFriction === level
@@ -207,12 +240,28 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                       : `text-slate-500 ${hoverColor} border-slate-200 bg-transparent`
                   }
                 `}
-                  title={level}
-                >
-                  <Icon size={14} className="rotate-90" />
-                </button>
-              );
-            }
+                    title={level}
+                  >
+                    <Icon size={14} className="rotate-90" />
+                  </button>
+                );
+              }
+            )}
+          </div>
+
+          {possibleBlockers.length > 0 && (
+            <select
+              value={editedBlockedBy || ""}
+              onChange={(e) => setEditedBlockedBy(e.target.value || undefined)}
+              className="text-xs p-1 bg-slate-50 border border-slate-200 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500 max-w-full"
+            >
+              <option value="">No Blocker</option>
+              {possibleBlockers.map((blocker) => (
+                <option key={blocker.id} value={blocker.id}>
+                  Blocked by: {blocker.text}
+                </option>
+              ))}
+            </select>
           )}
         </div>
       )}
