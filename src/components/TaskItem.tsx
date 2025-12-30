@@ -6,14 +6,12 @@ import {
   Trash2,
   Pencil,
   Check,
-  Wifi,
-  WifiHigh,
-  WifiLow,
-  WifiZero,
   CornerLeftUp,
   Lock,
 } from "lucide-react";
 import type { Task, FrictionLevel } from "../types";
+import { FrictionBar } from "./FrictionBar";
+import { FrictionSelector } from "./FrictionSelector";
 
 interface TaskItemProps {
   task: Task;
@@ -62,19 +60,6 @@ export const TaskItem: React.FC<TaskItemProps> = ({
     }
   };
 
-  const getFrictionBarStyle = (level: FrictionLevel) => {
-    switch (level) {
-      case "none":
-        return { width: "25%", className: "bg-cyan-500" };
-      case "low":
-        return { width: "50%", className: "bg-violet-500" };
-      case "moderate":
-        return { width: "75%", className: "bg-fuchsia-600" };
-      case "high":
-        return { width: "100%", className: "bg-rose-600" };
-    }
-  };
-
   if (task.completed && showCompleted) {
     return (
       <div className="flex items-center gap-2 p-1.5 rounded bg-slate-50 border border-transparent">
@@ -98,10 +83,6 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   }
 
   if (task.completed && !showCompleted) return null;
-
-  const barStyle = getFrictionBarStyle(
-    isEditing ? editedFriction : task.friction
-  );
 
   return (
     <div
@@ -204,50 +185,10 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       {/* Edit Mode Friction Selection */}
       {isEditing && (
         <div className="flex flex-col gap-2 pl-6 mb-2">
-          <div className="flex gap-1">
-            {(["none", "low", "moderate", "high"] as FrictionLevel[]).map(
-              (level) => {
-                const Icon = {
-                  none: WifiZero,
-                  low: WifiLow,
-                  moderate: WifiHigh,
-                  high: Wifi,
-                }[level];
-
-                const activeColor = {
-                  none: "text-cyan-500",
-                  low: "text-violet-500",
-                  moderate: "text-fuchsia-600",
-                  high: "text-rose-600",
-                }[level];
-
-                const hoverColor = {
-                  none: "hover:text-cyan-500",
-                  low: "hover:text-violet-500",
-                  moderate: "hover:text-fuchsia-600",
-                  high: "hover:text-rose-600",
-                }[level];
-
-                return (
-                  <button
-                    key={level}
-                    onClick={() => setEditedFriction(level)}
-                    className={`
-                  p-0.5 rounded transition-all border
-                  ${
-                    editedFriction === level
-                      ? `bg-white shadow-sm ${activeColor} border-slate-200`
-                      : `text-slate-500 ${hoverColor} border-slate-200 bg-transparent`
-                  }
-                `}
-                    title={level}
-                  >
-                    <Icon size={14} className="rotate-90" />
-                  </button>
-                );
-              }
-            )}
-          </div>
+          <FrictionSelector
+            value={editedFriction}
+            onChange={setEditedFriction}
+          />
 
           {possibleBlockers.length > 0 && (
             <select
@@ -267,14 +208,11 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       )}
 
       {/* Friction Bar */}
-      <div
-        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-1 rounded-full transition-all duration-300"
-        style={{
-          width: barStyle.width,
-          backgroundColor: "transparent", // using className for color but width inline
-        }}
-      >
-        <div className={`h-full w-full ${barStyle.className}`} />
+      <div className="absolute bottom-0 left-0 w-full flex justify-center h-1 rounded-full transition-all duration-300 pointer-events-none">
+        <FrictionBar
+          level={isEditing ? editedFriction : task.friction}
+          className="rounded-full"
+        />
       </div>
     </div>
   );
