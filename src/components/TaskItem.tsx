@@ -85,19 +85,23 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   if (task.completed && !showCompleted) return null;
 
   return (
-    <div
-      className="group/task relative flex flex-col p-2 bg-white hover:bg-slate-50 rounded-lg transition-colors border border-slate-100 hover:border-slate-200"
-      style={{ marginLeft: `${depth * 1.5}rem` }}
-    >
-      {/* Blocked Indicator Arrow */}
-      {depth > 0 && (
-        <div className="absolute left-[-18px] top-3 text-slate-300">
-          <CornerLeftUp size={16} />
-        </div>
-      )}
-
+    <div className="group/task relative flex flex-col p-2 bg-white hover:bg-slate-50 rounded-lg transition-colors border border-slate-100 hover:border-slate-200">
       {/* Main Content Row */}
       <div className="flex items-start gap-2 mb-2">
+        {/* Indent Spacers and Arrow */}
+        {depth > 0 && (
+          <div className="flex items-center" style={{ marginTop: "2px" }}>
+            {/* For depth > 1, add spacers */}
+            {Array.from({ length: depth - 1 }).map((_, i) => (
+              <div key={i} className="w-6 h-4" />
+            ))}
+            {/* The Arrow */}
+            <div className="text-slate-300 mr-1">
+              <CornerLeftUp size={16} />
+            </div>
+          </div>
+        )}
+
         <button
           onClick={() => onToggle(task.id)}
           className="p-0.5 text-emerald-500 rounded transition-colors"
