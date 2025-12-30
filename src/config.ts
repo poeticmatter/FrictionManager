@@ -15,10 +15,10 @@ interface FrictionConfigItem {
 }
 
 export const FRICTION_CONFIG: Record<FrictionLevel, FrictionConfigItem> = {
-  none: { label: 'None', score: 0, color: 'text-gray-400', bg: 'bg-gray-100', border: 'border-gray-200' },
-  low: { label: 'Low', score: 1, color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-200' },
-  moderate: { label: 'Mod', score: 3, color: 'text-amber-500', bg: 'bg-amber-50', border: 'border-amber-200' },
-  high: { label: 'High', score: 5, color: 'text-rose-500', bg: 'bg-rose-50', border: 'border-rose-200' },
+  none: { label: 'None', score: 0, color: 'text-cyan-500', bg: 'bg-cyan-50', border: 'border-cyan-200' },
+  low: { label: 'Low', score: 1, color: 'text-violet-500', bg: 'bg-violet-50', border: 'border-violet-200' },
+  moderate: { label: 'Mod', score: 3, color: 'text-fuchsia-600', bg: 'bg-fuchsia-50', border: 'border-fuchsia-200' },
+  high: { label: 'High', score: 5, color: 'text-rose-600', bg: 'bg-rose-50', border: 'border-rose-200' },
 };
 
 interface StatusConfigItem {

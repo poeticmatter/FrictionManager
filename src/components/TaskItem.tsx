@@ -6,6 +6,10 @@ import {
   Trash2,
   Pencil,
   Check,
+  Wifi,
+  WifiHigh,
+  WifiLow,
+  WifiZero,
 } from "lucide-react";
 import type { Task, FrictionLevel } from "../types";
 
@@ -45,13 +49,13 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   const getFrictionBarStyle = (level: FrictionLevel) => {
     switch (level) {
       case "none":
-        return { width: "25%", className: "bg-gray-300" };
+        return { width: "25%", className: "bg-cyan-500" };
       case "low":
-        return { width: "50%", className: "bg-emerald-400" };
+        return { width: "50%", className: "bg-violet-500" };
       case "moderate":
-        return { width: "75%", className: "bg-amber-400" };
+        return { width: "75%", className: "bg-fuchsia-600" };
       case "high":
-        return { width: "100%", className: "bg-rose-500" };
+        return { width: "100%", className: "bg-rose-600" };
     }
   };
 
@@ -169,30 +173,53 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       {isEditing && (
         <div className="flex gap-1 pl-6 mb-2">
           {(["none", "low", "moderate", "high"] as FrictionLevel[]).map(
-            (level) => (
-              <button
-                key={level}
-                onClick={() => setEditedFriction(level)}
-                className={`
-                  w-5 h-5 flex items-center justify-center rounded text-[8px] font-bold transition-all
+            (level) => {
+              const Icon = {
+                none: WifiZero,
+                low: WifiLow,
+                moderate: WifiHigh,
+                high: Wifi,
+              }[level];
+
+              const activeColor = {
+                none: "text-cyan-500",
+                low: "text-violet-500",
+                moderate: "text-fuchsia-600",
+                high: "text-rose-600",
+              }[level];
+
+              const hoverColor = {
+                none: "hover:text-cyan-500",
+                low: "hover:text-violet-500",
+                moderate: "hover:text-fuchsia-600",
+                high: "hover:text-rose-600",
+              }[level];
+
+              return (
+                <button
+                  key={level}
+                  onClick={() => setEditedFriction(level)}
+                  className={`
+                  p-0.5 rounded transition-all border
                   ${
                     editedFriction === level
-                      ? "bg-white shadow-sm text-indigo-600 border border-slate-200"
-                      : "text-slate-300 hover:text-slate-500 border border-transparent"
+                      ? `bg-white shadow-sm ${activeColor} border-slate-200`
+                      : `text-slate-500 ${hoverColor} border-slate-200 bg-transparent`
                   }
                 `}
-                title={level}
-              >
-                {level[0].toUpperCase()}
-              </button>
-            )
+                  title={level}
+                >
+                  <Icon size={14} className="rotate-90" />
+                </button>
+              );
+            }
           )}
         </div>
       )}
 
       {/* Friction Bar */}
       <div
-        className="absolute bottom-0 left-0 h-1 rounded-full transition-all duration-300"
+        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-1 rounded-full transition-all duration-300"
         style={{
           width: barStyle.width,
           backgroundColor: "transparent", // using className for color but width inline
