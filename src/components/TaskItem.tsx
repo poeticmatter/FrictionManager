@@ -105,7 +105,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 
   return (
     <div
-      className="group/task relative flex flex-col p-2 bg-white hover:bg-slate-50 rounded-lg transition-colors border border-slate-100 hover:border-slate-200 overflow-hidden"
+      className="group/task relative flex flex-col p-2 bg-white hover:bg-slate-50 rounded-lg transition-colors border border-slate-100 hover:border-slate-200"
       style={{ marginLeft: `${depth * 1.5}rem` }}
     >
       {/* Blocked Indicator Arrow */}

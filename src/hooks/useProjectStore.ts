@@ -130,19 +130,24 @@ export const useProjectStore = () => {
     blockedBy?: string | null
   ) => {
     setTasks(
-      tasks.map((t) =>
-        t.id === taskId
-          ? {
-              ...t,
-              text,
-              friction,
-              blockedBy:
-                blockedBy === null
-                  ? undefined
-                  : blockedBy ?? t.blockedBy,
-            }
-          : t
-      )
+      tasks.map((t) => {
+        if (t.id === taskId) {
+          const newBlockedBy =
+            blockedBy === null
+              ? undefined
+              : blockedBy ?? t.blockedBy;
+
+          return {
+            ...t,
+            text,
+            friction,
+            blockedBy: newBlockedBy,
+            // If the task becomes blocked (has a blockedBy ID), force isToday to false
+            isToday: newBlockedBy ? false : t.isToday,
+          };
+        }
+        return t;
+      })
     );
   };
 
