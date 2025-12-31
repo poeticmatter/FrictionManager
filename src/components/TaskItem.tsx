@@ -52,6 +52,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   );
 
   const isBlocked = depth > 0;
+  const isCompleted = !!task.completed;
 
   const handleSave = () => {
     if (editedText.trim() && onUpdate) {
@@ -60,7 +61,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
     }
   };
 
-  if (task.completed && showCompleted) {
+  if (isCompleted && showCompleted) {
     return (
       <div className="flex items-center gap-2 p-1.5 rounded bg-slate-50 border border-transparent">
         <button
@@ -82,7 +83,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
     );
   }
 
-  if (task.completed && !showCompleted) return null;
+  if (isCompleted && !showCompleted) return null;
 
   return (
     <div className="group/task relative flex flex-col p-2 bg-white hover:bg-slate-50 rounded-lg transition-colors border border-slate-100 hover:border-slate-200">

@@ -211,7 +211,9 @@ export const useProjectStore = () => {
     if (task) {
       setTasks(
         tasks.map((t) =>
-          t.id === taskId ? { ...t, completed: !t.completed } : t
+          t.id === taskId
+            ? { ...t, completed: t.completed ? false : Date.now() }
+            : t
         )
       );
       touchProject(task.projectId);
