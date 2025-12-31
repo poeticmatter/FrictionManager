@@ -37,7 +37,20 @@ export default function App() {
   const hotProjects = projects.filter(p => p.status === 'hot').sort((a,b) => b.createdAt - a.createdAt);
   const coldProjects = projects.filter(p => p.status === 'cold').sort((a,b) => b.createdAt - a.createdAt);
   const ideaProjects = projects.filter(p => p.status === 'idea').sort((a,b) => b.createdAt - a.createdAt);
+
+  // Filter logic
   const tasksForToday = tasks.filter(t => t.isToday && !t.completed);
+
+  // Completed today logic
+  const now = Date.now();
+  const completedToday = tasks.filter(t => {
+    if (typeof t.completed !== 'number') return false;
+    const date = new Date(t.completed);
+    const today = new Date(now);
+    return date.getFullYear() === today.getFullYear() &&
+           date.getMonth() === today.getMonth() &&
+           date.getDate() === today.getDate();
+  });
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 p-4 md:p-6 font-sans">
@@ -166,27 +179,46 @@ export default function App() {
               </div>
               
               <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto pr-1 custom-scrollbar">
-                {tasksForToday.length === 0 ? (
+                {tasksForToday.length === 0 && completedToday.length === 0 ? (
                   <div className="py-8 text-center text-amber-800/40 text-sm">
                     <p>No tasks yet.</p>
                     <p className="text-xs mt-1">Select tasks from your projects.</p>
                   </div>
                 ) : (
-                  tasksForToday.map(task => {
-                    const project = projects.find(p => p.id === task.projectId);
-                    return (
-                      <div key={task.id} className="bg-white border border-amber-100 rounded-lg shadow-sm overflow-hidden">
-                        <TaskItem
-                          task={task}
-                          onToggle={toggleTask}
-                          onDelete={deleteTask}
-                          onToggleToday={toggleToday}
-                          onUpdate={updateTask}
-                          projectName={project?.name}
-                        />
+                  <>
+                    {tasksForToday.map(task => {
+                      const project = projects.find(p => p.id === task.projectId);
+                      return (
+                        <div key={task.id} className="bg-white border border-amber-100 rounded-lg shadow-sm overflow-hidden">
+                          <TaskItem
+                            task={task}
+                            onToggle={toggleTask}
+                            onDelete={deleteTask}
+                            onToggleToday={toggleToday}
+                            onUpdate={updateTask}
+                            projectName={project?.name}
+                          />
+                        </div>
+                      );
+                    })}
+
+                    {completedToday.length > 0 && (
+                      <div className="pt-4 border-t border-amber-200/50">
+                        <h3 className="text-xs font-semibold text-amber-800 mb-2 px-1">Completed Today</h3>
+                        <div className="space-y-1">
+                          {completedToday.map(task => (
+                             <TaskItem
+                               key={task.id}
+                               task={task}
+                               onToggle={toggleTask}
+                               onDelete={deleteTask}
+                               showCompleted={true}
+                             />
+                          ))}
+                        </div>
                       </div>
-                    );
-                  })
+                    )}
+                  </>
                 )}
               </div>
             </div>
