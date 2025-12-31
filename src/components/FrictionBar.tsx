@@ -15,13 +15,13 @@ export const FrictionBar: React.FC<FrictionBarProps> = ({
   const getFrictionBarStyle = (level: FrictionLevel) => {
     switch (level) {
       case "none":
-        return { width: "25%", className: "bg-cyan-500" };
+        return { width: "10%", className: "bg-cyan-500" };
       case "low":
-        return { width: "50%", className: "bg-violet-500" };
+        return { width: "25%", className: "bg-violet-500" };
       case "moderate":
-        return { width: "75%", className: "bg-fuchsia-600" };
+        return { width: "45%", className: "bg-fuchsia-600" };
       case "high":
-        return { width: "100%", className: "bg-rose-600" };
+        return { width: "70%", className: "bg-rose-600" };
     }
   };
 
