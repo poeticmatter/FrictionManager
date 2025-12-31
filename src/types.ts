@@ -6,7 +6,7 @@ export interface Task {
   projectId: string;
   text: string;
   friction: FrictionLevel;
-  isToday: boolean;
+  isToday: string | boolean;
   completed: boolean;
   createdAt: number;
   blockedBy?: string;
@@ -17,6 +17,7 @@ export interface Project {
   name: string;
   status: ProjectStatus;
   createdAt: number;
+  lastActivityAt?: number;
 }
 
 export interface BackupData {
