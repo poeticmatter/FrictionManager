@@ -7,12 +7,14 @@ import type {
   BackupData,
 } from "../types";
 
-const getTodayDateString = () => {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+const isSameDay = (d1: number, d2: number) => {
+  const date1 = new Date(d1);
+  const date2 = new Date(d2);
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
 };
 
 const increaseFriction = (current: FrictionLevel): FrictionLevel => {
@@ -48,11 +50,15 @@ export const useProjectStore = () => {
       if (saved) {
         try {
           const parsed: Task[] = JSON.parse(saved);
-          // Migration: Convert boolean isToday to date string
-          const today = getTodayDateString();
+          // Migration: Convert boolean/string isToday to timestamp
+          const now = Date.now();
           return parsed.map((t) => ({
             ...t,
-            isToday: t.isToday === true ? today : t.isToday,
+            // If true or string (from previous attempt), set to now
+            isToday:
+              t.isToday === true || typeof t.isToday === "string"
+                ? now
+                : t.isToday,
           }));
         } catch {
           console.error("Failed to parse tasks");
@@ -69,7 +75,6 @@ export const useProjectStore = () => {
 
   const checkStaleData = (currentProjects: Project[], currentTasks: Task[]) => {
     const now = Date.now();
-    const today = getTodayDateString();
     let hasChanges = false;
     let newProjects = [...currentProjects];
     let newTasks = [...currentTasks];
@@ -90,7 +95,12 @@ export const useProjectStore = () => {
 
     // 2. Check Tasks (isToday check)
     newTasks = newTasks.map((t) => {
-      if (t.isToday && typeof t.isToday === "string" && t.isToday !== today && !t.completed) {
+      if (
+        t.isToday &&
+        typeof t.isToday === "number" &&
+        !isSameDay(t.isToday, now) &&
+        !t.completed
+      ) {
         hasChanges = true;
         return {
           ...t,
@@ -219,10 +229,11 @@ export const useProjectStore = () => {
   const toggleToday = (taskId: string) => {
     const task = tasks.find((t) => t.id === taskId);
     if (task) {
-      const today = getTodayDateString();
       setTasks(
         tasks.map((t) =>
-          t.id === taskId ? { ...t, isToday: t.isToday ? false : today } : t
+          t.id === taskId
+            ? { ...t, isToday: t.isToday ? false : Date.now() }
+            : t
         )
       );
       touchProject(task.projectId);

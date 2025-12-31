@@ -6,7 +6,7 @@ export interface Task {
   projectId: string;
   text: string;
   friction: FrictionLevel;
-  isToday: string | boolean;
+  isToday: number | boolean;
   completed: boolean;
   createdAt: number;
   blockedBy?: string;
