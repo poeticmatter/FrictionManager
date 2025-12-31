@@ -10,14 +10,12 @@ import {
   Flame,
   Snowflake,
   Lightbulb,
-  Wifi,
-  WifiHigh,
-  WifiLow,
-  WifiZero,
 } from "lucide-react";
 import type { Project, Task, FrictionLevel, ProjectStatus } from "../types";
 import { FRICTION_CONFIG, STATUS_CONFIG } from "../config";
 import { TaskItem } from "./TaskItem";
+import { FrictionBar } from "./FrictionBar";
+import { FrictionSelector } from "./FrictionSelector";
 
 interface ProjectCardProps {
   project: Project;
@@ -83,21 +81,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       }
     });
   }
-
-  const getFrictionBarStyle = (level: FrictionLevel) => {
-    switch (level) {
-      case "none":
-        return { width: "25%", className: "bg-cyan-500" };
-      case "low":
-        return { width: "50%", className: "bg-violet-500" };
-      case "moderate":
-        return { width: "75%", className: "bg-fuchsia-600" };
-      case "high":
-        return { width: "100%", className: "bg-rose-600" };
-    }
-  };
-
-  const barStyle = getFrictionBarStyle(minFrictionLevel);
 
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
@@ -301,9 +284,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       </div>
 
       <div className="h-1 w-full bg-slate-100 flex justify-center">
-        <div
-          className={`h-full transition-all duration-500 ${barStyle.className}`}
-          style={{ width: barStyle.width }}
+        <FrictionBar
+          level={minFrictionLevel}
+          className="h-full transition-all duration-500"
         />
       </div>
 
@@ -322,49 +305,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 className="flex-1 text-xs px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
               />
               <div className="flex bg-slate-50 p-0.5 rounded-md border border-slate-100">
-                {(["none", "low", "moderate", "high"] as FrictionLevel[]).map(
-                  (level) => {
-                    const Icon = {
-                      none: WifiZero,
-                      low: WifiLow,
-                      moderate: WifiHigh,
-                      high: Wifi,
-                    }[level];
-
-                    const activeColor = {
-                      none: "text-cyan-500",
-                      low: "text-violet-500",
-                      moderate: "text-fuchsia-600",
-                      high: "text-rose-600",
-                    }[level];
-
-                    const hoverColor = {
-                      none: "hover:text-cyan-500",
-                      low: "hover:text-violet-500",
-                      moderate: "hover:text-fuchsia-600",
-                      high: "hover:text-rose-600",
-                    }[level];
-
-                    return (
-                      <button
-                        key={level}
-                        type="button"
-                        onClick={() => setNewTaskFriction(level)}
-                        className={`
-                      p-0.5 rounded transition-all border
-                      ${
-                        newTaskFriction === level
-                          ? `bg-white shadow-sm ${activeColor} border-slate-100`
-                          : `text-slate-500 ${hoverColor} border-slate-200 bg-transparent`
-                      }
-                    `}
-                        title={level}
-                      >
-                        <Icon size={14} className="rotate-90" />
-                      </button>
-                    );
-                  }
-                )}
+                <FrictionSelector
+                  value={newTaskFriction}
+                  onChange={setNewTaskFriction}
+                />
               </div>
               <button
                 type="submit"
