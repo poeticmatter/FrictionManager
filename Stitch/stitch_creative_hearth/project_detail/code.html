@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Friction Manager - Project Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Literata:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #fcf9f2;
+            -webkit-font-smoothing: antialiased;
+        }
+        .ink-bleed-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, #d8c2ba 50%, transparent 100%);
+            opacity: 0.4;
+        }
+        .soft-glow-active {
+            box-shadow: 0 0 20px rgba(138, 75, 50, 0.05);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d8c2ba;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f6f3ec",
+                        "secondary-container": "#d1e6cb",
+                        "inverse-on-surface": "#f3f0ea",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffdad9",
+                        "on-secondary-container": "#556752",
+                        "surface-container-high": "#ebe8e1",
+                        "primary-container": "#a86248",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#53433e",
+                        "on-primary-fixed-variant": "#70361f",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#ffb59a",
+                        "surface-dim": "#dcdad3",
+                        "primary-fixed": "#ffdbcf",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#fcf9f2",
+                        "tertiary-container": "#936a6a",
+                        "on-surface": "#1c1c18",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#f0eee7",
+                        "tertiary-fixed-dim": "#ecbbba",
+                        "surface-tint": "#8d4d34",
+                        "primary": "#8a4b32",
+                        "surface-variant": "#e5e2db",
+                        "outline-variant": "#d8c2ba",
+                        "on-tertiary-container": "#fffbff",
+                        "background": "#fcf9f2",
+                        "secondary": "#51634e",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#2f1314",
+                        "outline": "#86736d",
+                        "surface-container-highest": "#e5e2db",
+                        "primary-fixed-dim": "#ffb59a",
+                        "on-primary-fixed": "#380d00",
+                        "on-secondary-fixed-variant": "#3a4b37",
+                        "on-background": "#1c1c18",
+                        "tertiary": "#785253",
+                        "on-primary-container": "#fffbff",
+                        "inverse-surface": "#31312c",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#b8ccb2",
+                        "on-tertiary-fixed-variant": "#603d3e",
+                        "surface": "#fcf9f2",
+                        "secondary-fixed": "#d4e8cd",
+                        "on-secondary-fixed": "#0f1f0f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "card-padding": "32px",
+                        "stack-sm": "12px",
+                        "stack-lg": "48px",
+                        "stack-md": "24px",
+                        "canvas-margin-mobile": "24px",
+                        "gutter": "24px",
+                        "canvas-margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Literata"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Literata"],
+                        "headline-lg": ["Literata"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Literata"],
+                        "label-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-body-md text-on-surface">
+<div class="flex min-h-screen">
+<!-- Sidebar Navigation (Desktop) -->
+<aside class="hidden md:flex flex-col h-screen w-64 border-r border-outline-variant/20 bg-surface-container-low p-stack-md sticky top-0">
+<div class="mb-stack-lg">
+<h1 class="font-headline-md text-headline-md font-semibold text-primary">Friction Manager</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Stay in the flow</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-secondary-container/30 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-primary font-bold bg-secondary-container/30" href="#">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+<span class="font-label-md text-label-md">Review</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-secondary-container/30 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="bedtime">bedtime</span>
+<span class="font-label-md text-label-md">Resting</span>
+</a>
+</nav>
+<div class="mt-auto pt-stack-md border-t border-outline-variant/20">
+<button class="w-full bg-primary text-on-primary py-3 rounded-xl font-label-md text-label-md hover:opacity-90 transition-opacity active:scale-95 duration-200 ease-out">
+                    New Project
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto">
+<!-- Top App Bar (Mobile Only/Shared) -->
+<header class="flex justify-between items-center w-full px-canvas-margin-mobile md:px-canvas-margin-desktop py-stack-sm bg-surface/80 backdrop-blur-md sticky top-0 z-10 max-w-[1040px] mx-auto">
+<div class="md:hidden font-headline-md text-headline-md text-primary">Friction Manager</div>
+<div class="hidden md:block"></div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="settings">settings</span></button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="account_circle">account_circle</span></button>
+</div>
+</header>
+<!-- Fixed Center Canvas -->
+<div class="max-w-[1040px] mx-auto px-canvas-margin-mobile md:px-canvas-margin-desktop py-stack-lg">
+<!-- Page Header with Edit -->
+<div class="flex justify-between items-start mb-stack-lg">
+<div class="space-y-2">
+<nav class="flex gap-2 text-label-sm font-label-sm text-outline">
+<span>Projects</span> / <span class="text-on-surface-variant">Zen Garden CMS</span>
+</nav>
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Zen Garden CMS</h2>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 border border-secondary text-secondary rounded-full font-label-md text-label-md hover:bg-secondary-container/10 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+                        Edit Details
+                    </button>
+</div>
+<!-- Main Layout Columns -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Details & Checklist -->
+<div class="lg:col-span-7 space-y-stack-md">
+<!-- Sell Sheet Card -->
+<div class="bg-surface-container-low border border-outline-variant/30 rounded-xl p-card-padding">
+<p class="font-body-lg text-body-lg text-on-surface-variant italic leading-relaxed mb-6">
+                                Reimagining content management as a sensory experience. This project explores the intersection of tactile UI and high-performance backend architecture to foster a "Deep Flow" state for editors.
+                            </p>
+<div class="flex flex-wrap gap-2 mb-8">
+<span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed rounded-full font-label-sm text-label-sm">Resting</span>
+<span class="px-3 py-1 border border-outline-variant/40 rounded-full font-label-sm text-label-sm text-outline">Design System</span>
+<span class="px-3 py-1 border border-outline-variant/40 rounded-full font-label-sm text-label-sm text-outline">React Native</span>
+</div>
+<div class="grid grid-cols-2 gap-stack-md pt-4 border-t border-outline-variant/20">
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined" data-icon="local_fire_department" data-weight="fill" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<span class="font-label-md text-label-md">Warmth Flame</span>
+</div>
+<p class="text-label-sm font-label-sm text-outline">High creative momentum detected.</p>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined" data-icon="grain">grain</span>
+<span class="font-label-md text-label-md">Friction Dots</span>
+</div>
+<p class="text-label-sm font-label-sm text-outline">3 minor obstacles logged today.</p>
+</div>
+</div>
+</div>
+<!-- Checklist Card -->
+<div class="bg-surface border border-outline-variant/20 rounded-xl p-card-padding">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-md">Current Focus</h3>
+<div class="space-y-4">
+<label class="flex items-start gap-4 cursor-pointer group">
+<input checked="" class="mt-1 w-5 h-5 rounded border-outline text-primary focus:ring-primary-container bg-transparent" type="checkbox"/>
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface-variant line-through">Refine ceramic button texture physics</span>
+<p class="text-label-sm font-label-sm text-outline">Completed 2h ago</p>
+</div>
+</label>
+<label class="flex items-start gap-4 cursor-pointer group">
+<input class="mt-1 w-5 h-5 rounded border-outline text-primary focus:ring-primary-container bg-transparent" type="checkbox"/>
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface-variant">Audit "Wake up" state transition timing</span>
+<p class="text-label-sm font-label-sm text-outline">High friction area</p>
+</div>
+</label>
+<label class="flex items-start gap-4 cursor-pointer group">
+<input class="mt-1 w-5 h-5 rounded border-outline text-primary focus:ring-primary-container bg-transparent" type="checkbox"/>
+<div class="flex-1">
+<span class="font-body-md text-body-md text-on-surface-variant">Drafting the "Paper Stacking" logic documentation</span>
+</div>
+</label>
+</div>
+<button class="mt-stack-md text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined" data-icon="add">add</span> Add Task
+                            </button>
+</div>
+</div>
+<!-- Right Column: Session Log -->
+<div class="lg:col-span-5">
+<div class="bg-surface-container-highest/30 rounded-xl p-card-padding min-h-[500px]">
+<div class="flex justify-between items-center mb-stack-md">
+<h3 class="font-headline-md text-headline-md text-on-surface">Session Log</h3>
+<span class="material-symbols-outlined text-outline" data-icon="history">history</span>
+</div>
+<div class="relative space-y-stack-lg before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[1px] before:bg-outline-variant/30">
+<!-- Log Item 1 -->
+<div class="relative pl-8">
+<div class="absolute left-0 top-1.5 w-6 h-6 bg-surface border-2 border-primary rounded-full flex items-center justify-center">
+<div class="w-2 h-2 bg-primary rounded-full"></div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-primary">Focused Morning</span>
+<span class="font-label-sm text-label-sm text-outline">Oct 24</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Solved the spring physics on the navigation sidebar. The bounce feels more like heavy cardstock now. Reduced global transition time by 50ms.</p>
+</div>
+</div>
+<!-- Log Item 2 -->
+<div class="relative pl-8">
+<div class="absolute left-0 top-1.5 w-6 h-6 bg-surface border-2 border-tertiary rounded-full flex items-center justify-center">
+<div class="w-2 h-2 bg-tertiary rounded-full"></div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-tertiary">Resting State</span>
+<span class="font-label-sm text-label-sm text-outline">Oct 22</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Taking a break from visual styling to consider the 'ink-bleed' divider logic. Decided to keep them centered rather than full width.</p>
+</div>
+</div>
+<!-- Log Item 3 -->
+<div class="relative pl-8">
+<div class="absolute left-0 top-1.5 w-6 h-6 bg-surface border-2 border-outline rounded-full flex items-center justify-center">
+<div class="w-2 h-2 bg-outline rounded-full"></div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface">Initial Sketch</span>
+<span class="font-label-sm text-label-sm text-outline">Oct 20</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Defined the color palette: Warm Cream background with Terracotta and Sage accents. Foundation for the tactile studio feel.</p>
+</div>
+</div>
+</div>
+<button class="mt-stack-lg w-full py-3 border-2 border-dashed border-outline-variant/50 rounded-xl text-outline font-label-md text-label-md hover:border-primary/50 hover:text-primary transition-all">
+                                Log New Thought
+                            </button>
+</div>
+</div>
+</div>
+<!-- Atmospheric Visual Anchor (Bottom) -->
+<div class="mt-stack-lg pt-stack-lg flex flex-col items-center">
+<div class="ink-bleed-divider w-full mb-stack-md"></div>
+<div class="w-full h-64 rounded-2xl overflow-hidden relative group">
+<img alt="Zen Garden" class="w-full h-full object-cover grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-700" data-alt="A serene zen garden featuring perfectly raked fine sand patterns and a single, weathered stone. The lighting is soft and diffuse, mimicking a cloudy morning in a quiet studio. The color palette is composed of muted beiges, soft greys, and a hint of warm terracotta from the distant temple roof. The atmosphere is profoundly calm and focused, reinforcing the theme of mental clarity and flow." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPqnc6ReZ6R8zDcMHJ7Lb12qVsikjusWuWLTTe29YpdkNxNmeLr5-a2y3SC5eJb7uIrW5JqQFRijL9MlCfp9m5XHZuDfZISklnVlBxAyIhDKD7kHN5Im_AOeTlMrhHLXO0HvCRtsnZ_7bTr67iH3MR2UX3yU0sViQVGeONmm_8OS_f9TFklwFf6c1GRJQiTkHkw4dCSNuq3DftEO79BW9qCEjcxrSQbhR5tkK_VzocafmYDZuDRONsNqg4-aShQx_X-zdrdD5pZ9WW"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent pointer-events-none"></div>
+<div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-label-sm font-label-sm text-outline tracking-widest uppercase">
+                            Your Studio, Your Pace.
+                        </div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Bottom Nav Bar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe md:hidden bg-surface-container rounded-t-xl shadow-sm border-t border-outline-variant/10">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+<span class="font-label-sm text-label-sm">Review</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="bedtime">bedtime</span>
+<span class="font-label-sm text-label-sm">Resting</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span class="font-label-sm text-label-sm">New</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for checklist
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const label = this.closest('label').querySelector('span');
+                if (this.checked) {
+                    label.classList.add('line-through', 'opacity-60');
+                } else {
+                    label.classList.remove('line-through', 'opacity-60');
+                }
+            });
+        });
+
+        // Atmospheric fade-in on scroll effect for the header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-sm');
+            } else {
+                header.classList.remove('shadow-sm');
+            }
+        });
+    </script>
+</body></html>

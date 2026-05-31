@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Literata:wght@500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@100..900&amp;family=Plus+Jakarta+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#f6f3ec",
+                    "secondary-container": "#d1e6cb",
+                    "inverse-on-surface": "#f3f0ea",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#ffdad9",
+                    "on-secondary-container": "#556752",
+                    "surface-container-high": "#ebe8e1",
+                    "primary-container": "#a86248",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface-variant": "#53433e",
+                    "on-primary-fixed-variant": "#70361f",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#ffb59a",
+                    "surface-dim": "#dcdad3",
+                    "primary-fixed": "#ffdbcf",
+                    "on-error-container": "#93000a",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#fcf9f2",
+                    "tertiary-container": "#936a6a",
+                    "on-surface": "#1c1c18",
+                    "on-secondary": "#ffffff",
+                    "surface-container": "#f0eee7",
+                    "tertiary-fixed-dim": "#ecbbba",
+                    "surface-tint": "#8d4d34",
+                    "primary": "#8a4b32",
+                    "surface-variant": "#e5e2db",
+                    "outline-variant": "#d8c2ba",
+                    "on-tertiary-container": "#fffbff",
+                    "background": "#fcf9f2",
+                    "secondary": "#51634e",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#2f1314",
+                    "outline": "#86736d",
+                    "surface-container-highest": "#e5e2db",
+                    "primary-fixed-dim": "#ffb59a",
+                    "on-primary-fixed": "#380d00",
+                    "on-secondary-fixed-variant": "#3a4b37",
+                    "on-background": "#1c1c18",
+                    "tertiary": "#785253",
+                    "on-primary-container": "#fffbff",
+                    "inverse-surface": "#31312c",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#b8ccb2",
+                    "on-tertiary-fixed-variant": "#603d3e",
+                    "surface": "#fcf9f2",
+                    "secondary-fixed": "#d4e8cd",
+                    "on-secondary-fixed": "#0f1f0f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "card-padding": "32px",
+                    "stack-sm": "12px",
+                    "stack-lg": "48px",
+                    "stack-md": "24px",
+                    "canvas-margin-mobile": "24px",
+                    "gutter": "24px",
+                    "canvas-margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "headline-xl": ["Literata"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Literata"],
+                    "headline-lg": ["Literata"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Literata"],
+                    "label-md": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ink-bleed {
+            background: linear-gradient(90deg, transparent, var(--tw-outline-variant) 20%, var(--tw-outline-variant) 80%, transparent);
+            height: 1px;
+            opacity: 0.3;
+        }
+        .paper-stack {
+            box-shadow: 0 4px 0 -2px #ebe8e1, 0 8px 0 -4px #e5e2db;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex overflow-hidden">
+<!-- SideNavBar (Desktop Only Anchor) -->
+<aside class="hidden md:flex flex-col h-screen w-64 border-r border-outline-variant/20 bg-surface p-stack-md flex-shrink-0">
+<div class="mb-stack-lg">
+<h1 class="font-headline-md text-headline-md font-semibold text-primary">Friction Manager</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Stay in the flow</p>
+</div>
+<nav class="flex-grow space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-secondary-container/30 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary font-bold bg-secondary-container/30" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">visibility</span>
+<span class="font-label-md text-label-md">Review</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-secondary-container/30 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined">bedtime</span>
+<span class="font-label-md text-label-md">Resting</span>
+</a>
+</nav>
+<div class="mt-auto pt-stack-md">
+<button class="w-full bg-primary text-on-primary py-3 rounded-xl font-label-md text-label-md active:scale-95 duration-200 ease-out shadow-sm">
+                New Project
+            </button>
+<div class="mt-6 flex items-center gap-3 px-2">
+<img alt="User's profile" class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbBvzebUbcABMXvO8FRTZaq4dKbmGEx-zmQl4HlTwNfFhAv4dL_Y8qu7ZRxvy84136YHevEWPTiTJupYY7AQfoQcMsU8QTV6Uq_VsG1IFuxInaImqMXoukYHCs-P4UCkWX0GhbLBTp0UuVLdUQS32J1waNzsq0YdTk3SlhxIlG9c5Y7tAdfhyMyQ38U99RaNWojbMVnDs9ooTF1MgG4Kw8Jx4_Vj0qtAxRsaDA1nhls4PF6FKzx9myNlJ_7Y3FRuv8iHYiR_HVnowE"/>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Creative Soul</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Flowing State</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-grow overflow-y-auto h-screen relative">
+<!-- TopAppBar (Contextual Header) -->
+<header class="sticky top-0 z-10 bg-surface/80 backdrop-blur-md px-canvas-margin-mobile md:px-canvas-margin-desktop py-stack-sm flex justify-between items-center max-w-[1040px] mx-auto w-full">
+<h2 class="font-headline-md text-headline-md text-primary md:hidden">Friction Manager</h2>
+<div class="hidden md:flex gap-4">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">shuffle</span>
+</button>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">settings</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">account_circle</span>
+</div>
+</header>
+<!-- Focused Canvas -->
+<div class="max-w-[1040px] mx-auto px-canvas-margin-mobile md:px-canvas-margin-desktop pb-32 pt-8">
+<!-- Atmospheric Header -->
+<div class="mb-stack-lg animate-fade-in">
+<p class="font-label-md text-label-md text-secondary mb-2 uppercase tracking-widest">Morning Review</p>
+<h3 class="font-headline-xl text-headline-xl md:text-headline-xl text-on-surface">Rediscover your ideas</h3>
+</div>
+<!-- The Large Project Card -->
+<div class="relative group">
+<div class="bg-surface-bright border border-outline-variant/30 rounded-xl p-card-padding paper-stack transition-all duration-500 hover:border-outline-variant/60">
+<div class="flex flex-col md:flex-row justify-between items-start gap-gutter mb-stack-md">
+<div class="flex-grow">
+<div class="flex items-center gap-3 mb-2">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm">Wake up</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm">Project #042</span>
+</div>
+<h4 class="font-headline-lg text-headline-lg text-primary mb-4">The Atlas of Quiet Places</h4>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-all p-2 bg-surface-container rounded-full" title="Jump to random">
+<span class="material-symbols-outlined">casino</span>
+</button>
+</div>
+<!-- Sell Sheet / Narrative -->
+<div class="mb-stack-lg border-l-2 border-outline-variant/20 pl-6 py-2">
+<p class="font-body-lg text-body-lg text-on-surface italic leading-relaxed">
+                            "A sensory map of the city's silent zones. It’s more than a travel guide; it’s an invitation to pause. Needs a softer color palette—maybe eggshell and charcoal."
+                        </p>
+</div>
+<!-- Visual Token / Mood Image -->
+<div class="w-full h-64 md:h-80 rounded-lg overflow-hidden mb-stack-lg bg-surface-container">
+<img class="w-full h-full object-cover mix-blend-multiply opacity-80 transition-transform duration-700 hover:scale-105" data-alt="A tranquil, minimalist interior of a library with floor-to-ceiling wooden bookshelves filled with cream-colored volumes. Soft morning sunlight streams through a large arched window, casting long, gentle shadows across a polished parquet floor. The scene is incredibly peaceful and tidy, reflecting a refined aesthetic of warm wood tones and soft ivory. The mood is scholarly and meditative." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrSOT70R9SFnfOFHrZRVtly5pyES94u_u-tl84uDNKqI-JHxHr2QjFKD_cn6L4Ywnn0MGjZgWBHug0zOY_7AIX1sJ1satWoYBc_RAAiuceRTG8hgNSyUeyPEOv5PaBzHT-CyRn61Vj_lkuhc1z7vd3epsQXijeX3dsDQnbYGoB9z4G300b06d_embYVHTqSy4XgCssn4zcqrb8Dyr90EKBOZpws7y-glOE0S5gQ_UhZR_xmICes4A8liRR7PCGRrMuNx8ADjyEzQhT"/>
+</div>
+<!-- Metrics & Metadata Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md mb-stack-lg">
+<div class="space-y-4">
+<div>
+<h5 class="font-label-md text-label-md text-on-surface-variant uppercase mb-2">Energy Balance</h5>
+<div class="flex items-center gap-4">
+<div class="flex-grow h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-3/4 rounded-full"></div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">75% Warmth</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full font-label-sm text-label-sm border border-outline-variant/10">#CreativeCartography</span>
+<span class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full font-label-sm text-label-sm border border-outline-variant/10">#Research</span>
+<span class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full font-label-sm text-label-sm border border-outline-variant/10">#PersonalProject</span>
+</div>
+</div>
+<div class="p-4 bg-surface-container-low rounded-lg border border-outline-variant/10">
+<h5 class="font-label-md text-label-md text-primary mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">history</span>
+                                Last Session Log
+                            </h5>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                                "Gathered coordinates for the North Shore park. The 'friction' is coming from the lack of high-res elevation data. Maybe use simplified contours instead?"
+                            </p>
+<p class="text-[10px] text-outline mt-2 uppercase tracking-widest">Oct 12 • 42 mins</p>
+</div>
+</div>
+<!-- Divider -->
+<div class="ink-bleed mb-stack-md"></div>
+<!-- Interaction Controls -->
+<div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+<div class="flex gap-2">
+<button class="px-4 py-2 text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high rounded-lg transition-all">Snooze</button>
+<button class="px-4 py-2 text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-high rounded-lg transition-all">Rest indefinitely</button>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-8 py-3 bg-secondary text-on-secondary rounded-full font-label-md text-label-md hover:brightness-95 active:scale-95 transition-all shadow-sm">
+                                Keep active
+                            </button>
+<button class="p-3 text-primary hover:translate-x-1 transition-transform">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Contextual Hint -->
+<div class="mt-stack-lg text-center">
+<p class="font-body-md text-body-md text-outline italic">Flip to see another gem from your box of projects.</p>
+</div>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe md:hidden bg-surface-container shadow-sm rounded-t-xl border-t border-outline-variant/10">
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">visibility</span>
+<span class="font-label-sm text-label-sm">Review</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1" href="#">
+<span class="material-symbols-outlined">bedtime</span>
+<span class="font-label-sm text-label-sm">Resting</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1" href="#">
+<span class="material-symbols-outlined">add</span>
+<span class="font-label-sm text-label-sm">New</span>
+</a>
+</nav>
+</main>
+<script>
+        // Subtle interaction: Card parallax effect
+        document.addEventListener('mousemove', (e) => {
+            const card = document.querySelector('.paper-stack');
+            if (!card) return;
+            
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            if (x > 0 && x < rect.width && y > 0 && y < rect.height) {
+                const xRotation = -((y - rect.height / 2) / rect.height) * 1.5;
+                const yRotation = ((x - rect.width / 2) / rect.width) * 1.5;
+                card.style.transform = `perspective(1000px) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
+            } else {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+            }
+        });
+
+        // Atmospheric fade-in for page load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('opacity-0');
+            setTimeout(() => {
+                document.body.classList.remove('opacity-0');
+                document.body.classList.add('transition-opacity', 'duration-1000', 'opacity-100');
+            }, 100);
+        });
+    </script>
+</body></html>
