@@ -64,9 +64,18 @@ const ProjectDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const project = useStore(state => state.projects.find(p => p.id === id));
-  const projectTasks = useStore(state => state.tasks.filter(t => t.projectId === id));
-  const logs = useStore(state => state.sessionLogs.filter(l => l.projectId === id).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+  const projects = useStore(state => state.projects);
+  const tasks = useStore(state => state.tasks);
+  const sessionLogs = useStore(state => state.sessionLogs);
+
+  const project = React.useMemo(() => projects.find(p => p.id === id), [projects, id]);
+  const projectTasks = React.useMemo(() => tasks.filter(t => t.projectId === id), [tasks, id]);
+  const logs = React.useMemo(() => 
+    sessionLogs
+      .filter(l => l.projectId === id)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+    [sessionLogs, id]
+  );
 
   const {
     updateProject, deleteProject, addTask, toggleTaskCompletion,
@@ -294,7 +303,7 @@ const ProjectDetail: React.FC = () => {
                 logs.map(log => (
                   <div key={log.id} className="group">
                     <div className="text-xs font-medium text-slate-400 mb-1">
-                      {format(new Date(log.date), 'MMM d, h:mm a')}
+                      {format(new Date(log.date), 'MMM d, yyyy')}
                     </div>
                     <div className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
                       {log.entry}
