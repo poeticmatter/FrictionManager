@@ -383,6 +383,10 @@ export const useStore = create<AppState>()(
             set({ syncStatus: 'error', syncError: err?.message || 'Failed to update task' });
           }
         }
+
+        if (nextCompletedAt) {
+          await get().addSessionLog(projectId, `Completed task: "${task.text}"`);
+        }
       },
 
       deleteTask: async (taskId) => {
