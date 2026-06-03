@@ -168,138 +168,153 @@ const ProjectDetail: React.FC = () => {
       )}
 
       {/* Header Section */}
-      <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200/60 shadow-sm mb-8 relative group">
-        <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200/60 shadow-sm mb-8">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
           {isEditing ? (
             <>
-              <button onClick={() => setIsEditing(false)} className="p-2 text-slate-400 hover:bg-slate-100 rounded-full">
-                <X size={18} />
-              </button>
-              <button onClick={handleEditSave} className="p-2 text-terracotta hover:bg-terracotta/10 rounded-full">
-                <Check size={18} />
-              </button>
-            </>
-          ) : (
-            <button onClick={handleEditInit} className="p-2 text-slate-400 hover:bg-slate-100 rounded-full" title="Edit project">
-              <Edit2 size={18} />
-            </button>
-          )}
-        </div>
-
-        {isEditing ? (
-          <div className="space-y-4 max-w-2xl pr-20">
-            <input
-              autoFocus
-              value={editName}
-              onChange={e => setEditName(e.target.value)}
-              className="w-full text-4xl font-serif text-slate-800 bg-slate-50 border-b border-slate-300 focus:border-terracotta outline-none pb-1"
-              placeholder="Project Name"
-            />
-            <textarea
-              value={editSellSheet}
-              onChange={e => setEditSellSheet(e.target.value)}
-              className="w-full text-lg italic text-slate-600 bg-slate-50 border-b border-slate-300 focus:border-terracotta outline-none pb-1 resize-none"
-              placeholder="Sell sheet..."
-              rows={2}
-            />
-            <input
-              value={editTags}
-              onChange={e => setEditTags(e.target.value)}
-              className="w-full text-sm text-slate-600 bg-slate-50 border-b border-slate-300 focus:border-terracotta outline-none pb-1"
-              placeholder="Tags (comma separated)"
-            />
-          </div>
-        ) : (
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div className="max-w-2xl flex-1 min-w-0">
-              <div className="flex items-center gap-4 mb-4">
-                <h1 className="text-4xl font-serif text-slate-800 leading-tight truncate">
-                  {project.name}
-                </h1>
-                <div
-                  className="mt-2 shrink-0 p-1.5 rounded-full bg-slate-50 border border-slate-100"
-                  title={`Last touched: ${format(new Date(project.lastTouchedAt), 'MMM d, yyyy')} (${warmth})`}
-                >
-                  <WarmthIcon warmth={warmth} />
-                </div>
+              <div className="space-y-4 max-w-2xl flex-1 min-w-0">
+                <input
+                  autoFocus
+                  value={editName}
+                  onChange={e => setEditName(e.target.value)}
+                  className="w-full text-4xl font-serif text-slate-800 bg-slate-50 border-b border-slate-300 focus:border-terracotta outline-none pb-1"
+                  placeholder="Project Name"
+                />
+                <textarea
+                  value={editSellSheet}
+                  onChange={e => setEditSellSheet(e.target.value)}
+                  className="w-full text-lg italic text-slate-600 bg-slate-50 border-b border-slate-300 focus:border-terracotta outline-none pb-1 resize-none"
+                  placeholder="Sell sheet..."
+                  rows={2}
+                />
+                <input
+                  value={editTags}
+                  onChange={e => setEditTags(e.target.value)}
+                  className="w-full text-sm text-slate-600 bg-slate-50 border-b border-slate-300 focus:border-terracotta outline-none pb-1"
+                  placeholder="Tags (comma separated)"
+                />
               </div>
 
-              {project.sellSheet && (
-                <p className="text-lg italic text-slate-600 mb-6 break-words">
-                  {project.sellSheet}
-                </p>
-              )}
-
-              {tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {tags.map((tag, i) => (
-                    <span key={i} className="px-3 py-1 bg-sage/10 text-sage text-sm font-medium rounded-full">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Snooze Control in Header */}
-            <div className="flex items-center gap-2 shrink-0 self-start mt-2">
-              {project.restingAt ? (
+              <div className="flex items-center gap-2 shrink-0 self-start mt-2">
                 <button
-                  onClick={() => wakeProject(project.id)}
-                  className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white font-medium rounded-xl hover:bg-slate-700 transition-colors shadow-sm text-sm"
+                  onClick={() => setIsEditing(false)}
+                  className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 font-medium rounded-xl hover:bg-slate-50 transition-colors shadow-sm text-sm"
+                  title="Cancel editing"
                 >
-                  <RefreshCw size={16} />
-                  Wake Up
+                  <X size={16} />
+                  <span>Cancel</span>
                 </button>
-              ) : showSnoozeOptions ? (
-                <div className="flex items-center gap-2 bg-slate-50 p-1.5 border border-slate-200 rounded-xl">
-                  <button
-                    onClick={() => {
-                      restProject(project.id, 7);
-                      setShowSnoozeOptions(false);
-                    }}
-                    className="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
-                  >
-                    1 Wk
-                  </button>
-                  <button
-                    onClick={() => {
-                      restProject(project.id, 30);
-                      setShowSnoozeOptions(false);
-                    }}
-                    className="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
-                  >
-                    1 Mo
-                  </button>
-                  <button
-                    onClick={() => {
-                      restProject(project.id, null);
-                      setShowSnoozeOptions(false);
-                    }}
-                    className="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
-                  >
-                    Indefinitely
-                  </button>
-                  <button
-                    onClick={() => setShowSnoozeOptions(false)}
-                    className="px-2 py-1 text-slate-400 hover:text-slate-600 text-xs font-medium"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ) : (
                 <button
-                  onClick={() => setShowSnoozeOptions(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-medium rounded-xl hover:bg-slate-55 transition-colors shadow-sm text-sm"
-                  title="Snooze project"
+                  onClick={handleEditSave}
+                  className="flex items-center gap-2 px-4 py-2 bg-terracotta text-white font-medium rounded-xl hover:bg-terracotta/90 transition-colors shadow-sm text-sm"
+                  title="Save changes"
                 >
-                  <Moon size={16} />
-                  Snooze
+                  <Check size={16} />
+                  <span>Save</span>
                 </button>
-              )}
-            </div>
-          </div>
-        )}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="max-w-2xl flex-1 min-w-0">
+                <div className="flex items-center gap-4 mb-4">
+                  <h1 className="text-4xl font-serif text-slate-800 leading-tight truncate">
+                    {project.name}
+                  </h1>
+                  <div
+                    className="mt-2 shrink-0 p-1.5 rounded-full bg-slate-50 border border-slate-100"
+                    title={`Last touched: ${format(new Date(project.lastTouchedAt), 'MMM d, yyyy')} (${warmth})`}
+                  >
+                    <WarmthIcon warmth={warmth} />
+                  </div>
+                </div>
+
+                {project.sellSheet && (
+                  <p className="text-lg italic text-slate-600 mb-6 break-words">
+                    {project.sellSheet}
+                  </p>
+                )}
+
+                {tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag, i) => (
+                      <span key={i} className="px-3 py-1 bg-sage/10 text-sage text-sm font-medium rounded-full">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Actions: Edit & Snooze */}
+              <div className="flex flex-wrap items-center gap-2 shrink-0 self-start mt-2">
+                <button
+                  onClick={handleEditInit}
+                  className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-medium rounded-xl hover:bg-slate-50 transition-colors shadow-sm text-sm"
+                  title="Edit project"
+                >
+                  <Edit2 size={16} />
+                  <span>Edit</span>
+                </button>
+
+                {project.restingAt ? (
+                  <button
+                    onClick={() => wakeProject(project.id)}
+                    className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white font-medium rounded-xl hover:bg-slate-700 transition-colors shadow-sm text-sm"
+                  >
+                    <RefreshCw size={16} />
+                    Wake Up
+                  </button>
+                ) : showSnoozeOptions ? (
+                  <div className="flex items-center gap-2 bg-slate-50 p-1.5 border border-slate-200 rounded-xl">
+                    <button
+                      onClick={() => {
+                        restProject(project.id, 7);
+                        setShowSnoozeOptions(false);
+                      }}
+                      className="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
+                    >
+                      1 Wk
+                    </button>
+                    <button
+                      onClick={() => {
+                        restProject(project.id, 30);
+                        setShowSnoozeOptions(false);
+                      }}
+                      className="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
+                    >
+                      1 Mo
+                    </button>
+                    <button
+                      onClick={() => {
+                        restProject(project.id, null);
+                        setShowSnoozeOptions(false);
+                      }}
+                      className="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
+                    >
+                      Indefinitely
+                    </button>
+                    <button
+                      onClick={() => setShowSnoozeOptions(false)}
+                      className="px-2 py-1 text-slate-400 hover:text-slate-600 text-xs font-medium"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowSnoozeOptions(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-medium rounded-xl hover:bg-slate-50 transition-colors shadow-sm text-sm"
+                    title="Snooze project"
+                  >
+                    <Moon size={16} />
+                    Snooze
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
