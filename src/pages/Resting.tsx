@@ -42,13 +42,8 @@ const Resting: React.FC = () => {
             const frictionVal = getFrictionValue(friction);
             const tags = project.tags.split(',').map(t => t.trim()).filter(Boolean);
 
-            let restingText = '';
-            if (project.restingUntil) {
-              const daysLeft = differenceInDays(new Date(project.restingUntil), new Date());
-              restingText = daysLeft > 0 ? `${daysLeft} days left` : 'Waking soon';
-            } else {
-              restingText = 'Indefinitely';
-            }
+            const daysLeft = project.restingUntil ? differenceInDays(new Date(project.restingUntil), new Date()) : null;
+            const restingText = daysLeft !== null ? (daysLeft > 0 ? `${daysLeft} days left` : 'Waking soon') : 'Indefinitely';
 
             return (
               <div

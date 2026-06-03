@@ -66,10 +66,9 @@ const Layout: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-cream">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 border-r border-terracotta/10 px-6 py-8">
+      <aside className="hidden md:flex flex-col w-64 h-screen sticky top-0 border-r border-terracotta/10 px-6 py-8">
         <div className="mb-12">
           <h1 className="font-serif text-2xl text-terracotta mb-1">Friction Manager</h1>
-          <p className="text-sm text-slate-500">Stay in the flow</p>
         </div>
 
         <nav className="flex-1 space-y-2">

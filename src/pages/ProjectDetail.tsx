@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Check, Trash2, Edit2, X, Flame, Sun, Snowflake } from 'lucide-react';
+import { ArrowLeft, Plus, Check, Trash2, Edit2, X, Flame, Sun, Snowflake, Moon, RefreshCw } from 'lucide-react';
 import { format } from 'date-fns';
 import { useStore } from '../store';
 import { calculateWarmth, calculateTaskFriction, getFrictionValue } from '../utils/calculations';
@@ -79,7 +79,7 @@ const ProjectDetail: React.FC = () => {
 
   const {
     updateProject, deleteProject, addTask, toggleTaskCompletion,
-    deleteTask, addSessionLog, touchProject
+    deleteTask, addSessionLog, touchProject, restProject, wakeProject
   } = useStore();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -90,6 +90,7 @@ const ProjectDetail: React.FC = () => {
   const [newTaskText, setNewTaskText] = useState('');
   const [showCompleted, setShowCompleted] = useState(false);
   const [newLogText, setNewLogText] = useState('');
+  const [showSnoozeOptions, setShowSnoozeOptions] = useState(false);
 
   if (!project) {
     return (
@@ -143,6 +144,29 @@ const ProjectDetail: React.FC = () => {
         <span className="text-sm font-medium">Dashboard</span>
       </button>
 
+      {/* Banner Alerts */}
+      {project.restingAt && (
+        <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 mb-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Moon size={20} className="text-amber-600 shrink-0" />
+            <div>
+              <h4 className="font-medium text-amber-900 text-sm">This project is resting</h4>
+              <p className="text-xs text-amber-700">
+                {project.restingUntil
+                  ? `Snoozed until ${format(new Date(project.restingUntil), 'MMMM d, yyyy')}.`
+                  : 'Resting indefinitely.'}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => wakeProject(project.id)}
+            className="px-4 py-1.5 bg-white border border-amber-200 text-amber-800 font-medium text-xs rounded-xl hover:bg-amber-55 transition-colors shadow-sm shrink-0"
+          >
+            Wake Up Now
+          </button>
+        </div>
+      )}
+
       {/* Header Section */}
       <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200/60 shadow-sm mb-8 relative group">
         <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -186,34 +210,94 @@ const ProjectDetail: React.FC = () => {
             />
           </div>
         ) : (
-          <div className="max-w-2xl">
-            <div className="flex items-center gap-4 mb-4">
-              <h1 className="text-4xl font-serif text-slate-800 leading-tight">
-                {project.name}
-              </h1>
-              <div
-                className="mt-2 shrink-0 p-1.5 rounded-full bg-slate-50 border border-slate-100"
-                title={`Last touched: ${format(new Date(project.lastTouchedAt), 'MMM d, yyyy')} (${warmth})`}
-              >
-                <WarmthIcon warmth={warmth} />
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+            <div className="max-w-2xl flex-1 min-w-0">
+              <div className="flex items-center gap-4 mb-4">
+                <h1 className="text-4xl font-serif text-slate-800 leading-tight truncate">
+                  {project.name}
+                </h1>
+                <div
+                  className="mt-2 shrink-0 p-1.5 rounded-full bg-slate-50 border border-slate-100"
+                  title={`Last touched: ${format(new Date(project.lastTouchedAt), 'MMM d, yyyy')} (${warmth})`}
+                >
+                  <WarmthIcon warmth={warmth} />
+                </div>
               </div>
+
+              {project.sellSheet && (
+                <p className="text-lg italic text-slate-600 mb-6 break-words">
+                  {project.sellSheet}
+                </p>
+              )}
+
+              {tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag, i) => (
+                    <span key={i} className="px-3 py-1 bg-sage/10 text-sage text-sm font-medium rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {project.sellSheet && (
-              <p className="text-lg italic text-slate-600 mb-6">
-                {project.sellSheet}
-              </p>
-            )}
-
-            {tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {tags.map((tag, i) => (
-                  <span key={i} className="px-3 py-1 bg-sage/10 text-sage text-sm font-medium rounded-full">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
+            {/* Snooze Control in Header */}
+            <div className="flex items-center gap-2 shrink-0 self-start mt-2">
+              {project.restingAt ? (
+                <button
+                  onClick={() => wakeProject(project.id)}
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white font-medium rounded-xl hover:bg-slate-700 transition-colors shadow-sm text-sm"
+                >
+                  <RefreshCw size={16} />
+                  Wake Up
+                </button>
+              ) : showSnoozeOptions ? (
+                <div className="flex items-center gap-2 bg-slate-50 p-1.5 border border-slate-200 rounded-xl">
+                  <button
+                    onClick={() => {
+                      restProject(project.id, 7);
+                      setShowSnoozeOptions(false);
+                    }}
+                    className="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
+                  >
+                    1 Wk
+                  </button>
+                  <button
+                    onClick={() => {
+                      restProject(project.id, 30);
+                      setShowSnoozeOptions(false);
+                    }}
+                    className="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
+                  >
+                    1 Mo
+                  </button>
+                  <button
+                    onClick={() => {
+                      restProject(project.id, null);
+                      setShowSnoozeOptions(false);
+                    }}
+                    className="px-3 py-1 bg-white border border-slate-200 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors"
+                  >
+                    Indefinitely
+                  </button>
+                  <button
+                    onClick={() => setShowSnoozeOptions(false)}
+                    className="px-2 py-1 text-slate-400 hover:text-slate-600 text-xs font-medium"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowSnoozeOptions(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 font-medium rounded-xl hover:bg-slate-55 transition-colors shadow-sm text-sm"
+                  title="Snooze project"
+                >
+                  <Moon size={16} />
+                  Snooze
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
