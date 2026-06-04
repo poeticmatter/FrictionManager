@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Project, Task, SessionLog } from '../types';
-import { supabase, isConfigured } from '../lib/supabase';
+import { supabase, isSupabaseConfigured, setSupabaseCredentials } from '../lib/supabase';
 
 // DB to Client Mapping helpers
 function mapProjectFromDb(dbProj: any): Project {
@@ -53,6 +53,7 @@ interface AppState {
   // Settings
   setUserName: (name: string) => void;
   syncData: () => Promise<void>;
+  updateSupabaseConfig: (url: string, key: string) => Promise<void>;
 
   // Projects
   addProject: (name: string, sellSheet: string, tags?: string) => Promise<void>;
@@ -83,7 +84,7 @@ export const useStore = create<AppState>()(
       sessionLogs: [],
 
       // Supabase database status
-      syncEnabled: isConfigured,
+      syncEnabled: isSupabaseConfigured(),
       syncStatus: 'idle',
       syncError: null,
       isSaving: false,
@@ -93,7 +94,7 @@ export const useStore = create<AppState>()(
       setUserName: (name) => set({ userName: name }),
 
       syncData: async () => {
-        if (!isConfigured) return;
+        if (!get().syncEnabled) return;
 
         set({ syncStatus: 'syncing', syncError: null });
         try {
@@ -171,7 +172,7 @@ export const useStore = create<AppState>()(
         // Optimistic UI update
         set((state) => ({ projects: [...state.projects, newProject] }));
 
-        if (isConfigured) {
+        if (get().syncEnabled) {
           try {
             const { error } = await supabase.from('projects').insert({
               id,
@@ -199,7 +200,7 @@ export const useStore = create<AppState>()(
           projects: state.projects.map(p => p.id === id ? { ...p, ...updatedFields } : p)
         }));
 
-        if (isConfigured) {
+        if (get().syncEnabled) {
           try {
             const dbFields: any = { last_touched_at: lastTouched };
             if (data.name !== undefined) dbFields.name = data.name;
@@ -226,7 +227,7 @@ export const useStore = create<AppState>()(
           sessionLogs: state.sessionLogs.filter(l => l.projectId !== id),
         }));
 
-        if (isConfigured) {
+        if (get().syncEnabled) {
           try {
             const { error } = await supabase.from('projects').delete().eq('id', id);
             if (error) throw error;
@@ -249,7 +250,7 @@ export const useStore = create<AppState>()(
           )
         }));
 
-        if (isConfigured) {
+        if (get().syncEnabled) {
           try {
             const { error } = await supabase.from('projects').update({
               last_touched_at: now,
@@ -281,7 +282,7 @@ export const useStore = create<AppState>()(
           )
         }));
 
-        if (isConfigured) {
+        if (get().syncEnabled) {
           try {
             const { error } = await supabase.from('projects').update({
               resting_at: nowStr,
@@ -319,7 +320,7 @@ export const useStore = create<AppState>()(
           )
         }));
 
-        if (isConfigured) {
+        if (get().syncEnabled) {
           try {
             const { error: taskErr } = await supabase.from('tasks').insert({
               id,
@@ -364,7 +365,7 @@ export const useStore = create<AppState>()(
           )
         }));
 
-        if (isConfigured) {
+        if (get().syncEnabled) {
           try {
             const { error: taskErr } = await supabase.from('tasks').update({
               completed_at: nextCompletedAt
@@ -407,7 +408,7 @@ export const useStore = create<AppState>()(
           )
         }));
 
-        if (isConfigured) {
+        if (get().syncEnabled) {
           try {
             const { error: taskErr } = await supabase.from('tasks').delete().eq('id', taskId);
             if (taskErr) throw taskErr;
@@ -446,7 +447,7 @@ export const useStore = create<AppState>()(
           )
         }));
 
-        if (isConfigured) {
+        if (get().syncEnabled) {
           try {
             const { error: logErr } = await supabase.from('session_log').insert({
               id,
@@ -487,7 +488,7 @@ export const useStore = create<AppState>()(
             })
           }));
 
-          if (isConfigured) {
+          if (get().syncEnabled) {
             try {
               for (const p of toWake) {
                 await supabase.from('projects').update({
@@ -502,6 +503,17 @@ export const useStore = create<AppState>()(
               set({ syncStatus: 'error', syncError: err?.message || 'Failed to auto-wake projects' });
             }
           }
+        }
+      },
+
+      updateSupabaseConfig: async (url: string, key: string) => {
+        setSupabaseCredentials(url, key);
+        const configured = isSupabaseConfigured();
+        set({ syncEnabled: configured, syncError: null });
+        if (configured) {
+          await get().syncData();
+        } else {
+          set({ syncStatus: 'idle' });
         }
       }
     }),

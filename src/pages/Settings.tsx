@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../store';
 import { RefreshCw, AlertTriangle, CheckCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase, getSupabaseCredentials } from '../lib/supabase';
 
 const Settings: React.FC = () => {
   const {
     userName,
     setUserName,
+    updateSupabaseConfig,
   } = useStore();
 
   const [inputName, setInputName] = useState(userName);
+  const [dbUrl, setDbUrl] = useState(() => getSupabaseCredentials().url);
+  const [dbKey, setDbKey] = useState(() => getSupabaseCredentials().key);
+  const [savingDb, setSavingDb] = useState(false);
   const [dbStatus, setDbStatus] = useState<'testing' | 'connected' | 'error'>('testing');
   const [dbError, setDbError] = useState<string | null>(null);
   const [pinging, setPinging] = useState(false);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setInputName(userName);
   }, [userName]);
 
@@ -23,11 +28,18 @@ const Settings: React.FC = () => {
     setPinging(true);
     setDbStatus('testing');
     try {
+      const { url, key } = getSupabaseCredentials();
+      if (!url || !key) {
+        setDbStatus('error');
+        setDbError('Supabase is not configured. Please enter a URL and Key.');
+        setPinging(false);
+        return;
+      }
       const { error } = await supabase.from('projects').select('*', { count: 'exact', head: true });
       if (error) throw error;
       setDbStatus('connected');
       setDbError(null);
-    } catch (err: any) {
+    } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       console.error('Database connection test failed:', err);
       setDbStatus('error');
       setDbError(err?.message || 'Failed to connect to Supabase. Check API keys and network.');
@@ -36,7 +48,26 @@ const Settings: React.FC = () => {
     }
   };
 
+  const handleSaveDbConfig = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingDb(true);
+    setDbError(null);
+    try {
+      await updateSupabaseConfig(dbUrl.trim(), dbKey.trim());
+      setActionSuccess('Database configuration updated successfully');
+      setTimeout(() => setActionSuccess(null), 3000);
+      await runPing();
+    } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+      console.error('Failed to save and connect database:', err);
+      setDbStatus('error');
+      setDbError(err?.message || 'Failed to save configuration. Please check your credentials.');
+    } finally {
+      setSavingDb(false);
+    }
+  };
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     runPing();
   }, []);
 
@@ -86,24 +117,52 @@ const Settings: React.FC = () => {
       </div>
 
       {/* Database & Sync Section */}
-      <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200/60 shadow-sm space-y-6">
-        <div className="flex justify-between items-center pb-2 border-b border-slate-50">
-          <h3 className="text-xl font-serif text-slate-800">Database & Connection</h3>
-        </div>
-
-        <div className="space-y-4">
+      <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200/60 shadow-sm">
+        <h3 className="text-xl font-serif text-slate-800 mb-6 pb-2 border-b border-slate-50">Database & Connection</h3>
+        
+        <form onSubmit={handleSaveDbConfig} className="space-y-4 max-w-md">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label htmlFor="dbUrl" className="block text-sm font-medium text-slate-700 mb-1">
               Supabase Project URL
             </label>
             <input
+              id="dbUrl"
               type="text"
-              readOnly
-              value={import.meta.env.VITE_SUPABASE_URL || ''}
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none text-slate-500 text-sm font-mono cursor-not-allowed"
+              value={dbUrl}
+              onChange={(e) => setDbUrl(e.target.value)}
+              className="w-full px-4 py-2.5 bg-cream/30 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-terracotta/30 focus:border-terracotta transition-colors text-slate-800 font-mono text-xs"
+              placeholder="https://your-project.supabase.co"
+              required
             />
           </div>
 
+          <div>
+            <label htmlFor="dbKey" className="block text-sm font-medium text-slate-700 mb-1">
+              Supabase Publishable Key (Anon Key)
+            </label>
+            <input
+              id="dbKey"
+              type="password"
+              value={dbKey}
+              onChange={(e) => setDbKey(e.target.value)}
+              className="w-full px-4 py-2.5 bg-cream/30 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-terracotta/30 focus:border-terracotta transition-colors text-slate-800 font-mono text-xs"
+              placeholder="your-anon-key"
+              required
+            />
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              disabled={savingDb}
+              className="px-5 py-2.5 bg-slate-800 text-white text-sm font-medium rounded-xl hover:bg-slate-700 transition-colors shrink-0 disabled:opacity-50"
+            >
+              {savingDb ? 'Saving...' : 'Save Config'}
+            </button>
+          </div>
+        </form>
+
+        <div className="mt-8 pt-6 border-t border-slate-100 space-y-4">
           <div className="flex items-start gap-4 p-5 bg-slate-50 border border-slate-200/60 rounded-2xl">
             <div className="flex-1 space-y-1">
               <div className="font-medium text-slate-800">Database Status</div>

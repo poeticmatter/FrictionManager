@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { Home, Eye, Moon, Settings } from 'lucide-react';
+import { Home, Eye, Moon, Settings, RefreshCw } from 'lucide-react';
 import { useStore } from '../store';
-import { isConfigured } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 const Layout: React.FC = () => {
   const checkAutoWake = useStore(state => state.checkAutoWake);
@@ -11,47 +11,132 @@ const Layout: React.FC = () => {
   const syncError = useStore(state => state.syncError);
   const syncData = useStore(state => state.syncData);
 
+  const [urlInput, setUrlInput] = useState('');
+  const [keyInput, setKeyInput] = useState('');
+  const [setupError, setSetupError] = useState<string | null>(null);
+  const [connecting, setConnecting] = useState(false);
+  const updateSupabaseConfig = useStore(state => state.updateSupabaseConfig);
+
   useEffect(() => {
-    if (isConfigured) {
+    if (syncEnabled) {
       checkAutoWake();
       // Re-check periodically if app stays open
       const interval = setInterval(checkAutoWake, 60 * 1000 * 60); // every hour
       return () => clearInterval(interval);
     }
-  }, [checkAutoWake]);
+  }, [checkAutoWake, syncEnabled]);
 
   // Handle initial data sync on mount if enabled
   useEffect(() => {
-    if (isConfigured) {
+    if (syncEnabled) {
       syncData().catch(err => console.error('Initial database sync failed:', err));
     }
-  }, [syncData]);
+  }, [syncData, syncEnabled]);
 
-  if (!isConfigured) {
+  const handleSetupSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!urlInput.trim() || !keyInput.trim()) {
+      setSetupError('Please enter both Project URL and Publishable Key.');
+      return;
+    }
+    if (!urlInput.trim().startsWith('http')) {
+      setSetupError('The Project URL must start with http:// or https://');
+      return;
+    }
+    setConnecting(true);
+    setSetupError(null);
+    try {
+      // Temporarily set it
+      await updateSupabaseConfig(urlInput.trim(), keyInput.trim());
+      // Test the connection
+      const { error: testErr } = await supabase.from('projects').select('*', { count: 'exact', head: true });
+      if (testErr) {
+        throw new Error(testErr.message || 'Failed to connect. Check URL/Key permissions.');
+      }
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.error('Connection setup failed:', err);
+      setSetupError(errorMsg || 'Failed to connect to Supabase. Check API keys and network.');
+      // Revert credentials
+      await updateSupabaseConfig('', '');
+    } finally {
+      setConnecting(false);
+    }
+  };
+
+  if (!syncEnabled) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-cream px-4 py-12">
-        <div className="max-w-md w-full bg-white rounded-2xl p-8 border border-slate-200/60 shadow-lg text-center space-y-6">
-          <div className="w-16 h-16 bg-terracotta/10 text-terracotta rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Settings size={32} className="animate-spin stroke-[1.5]" />
+        <div className="max-w-md w-full bg-white rounded-2xl p-8 border border-slate-200/60 shadow-lg space-y-6">
+          <div className="text-center space-y-2">
+            <div className="w-16 h-16 bg-terracotta/10 text-terracotta rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Settings size={32} className="stroke-[1.5]" />
+            </div>
+            <h1 className="font-serif text-3xl text-slate-800 tracking-tight">Supabase Setup</h1>
+            <p className="text-slate-600 text-sm leading-relaxed">
+              Connect Friction Manager to your own Supabase database to start sync and persistence.
+            </p>
           </div>
-          <h1 className="font-serif text-3xl text-slate-800 tracking-tight">Supabase Setup Required</h1>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Please configure your environment variables to connect the Friction Manager app to your Supabase database.
-          </p>
-          <div className="text-left bg-cream/40 p-5 rounded-xl border border-slate-200/40 font-mono text-xs text-slate-700 space-y-3">
-            <div className="font-bold text-slate-800 border-b border-slate-200/60 pb-1.5 mb-1.5">
-              Create a <span className="text-terracotta">.env</span> file in your project root:
-            </div>
+
+          <form onSubmit={handleSetupSubmit} className="space-y-4">
             <div>
-              VITE_SUPABASE_URL=<span className="text-blue-600">https://pgrbwmhdvpenrydnakox.supabase.co</span>
+              <label htmlFor="setupUrl" className="block text-sm font-medium text-slate-700 mb-1">
+                Supabase Project URL
+              </label>
+              <input
+                id="setupUrl"
+                type="text"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                placeholder="https://your-project.supabase.co"
+                className="w-full px-4 py-2.5 bg-cream/30 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-terracotta/30 focus:border-terracotta transition-colors text-slate-800 font-mono text-xs"
+                required
+              />
             </div>
+
             <div>
-              VITE_SUPABASE_PUBLISHABLE_KEY=<span className="text-sage font-semibold">your_publishable_key_here</span>
+              <label htmlFor="setupKey" className="block text-sm font-medium text-slate-700 mb-1">
+                Supabase Publishable Key (Anon Key)
+              </label>
+              <input
+                id="setupKey"
+                type="password"
+                value={keyInput}
+                onChange={(e) => setKeyInput(e.target.value)}
+                placeholder="your-anon-key"
+                className="w-full px-4 py-2.5 bg-cream/30 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-terracotta/30 focus:border-terracotta transition-colors text-slate-800 font-mono text-xs"
+                required
+              />
             </div>
+
+            {setupError && (
+              <div className="p-4 bg-red-50 border border-red-100 rounded-xl text-xs text-red-700 space-y-1">
+                <div className="font-semibold">Connection Failed</div>
+                <div>{setupError}</div>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={connecting}
+              className="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+            >
+              {connecting ? (
+                <>
+                  <RefreshCw className="animate-spin" size={16} />
+                  Connecting...
+                </>
+              ) : (
+                'Save & Connect'
+              )}
+            </button>
+          </form>
+
+          <div className="border-t border-slate-100 pt-4 text-center">
+            <p className="text-xs text-slate-400">
+              You can find your URL and anon key in your Supabase Dashboard under <strong>Settings &rarr; API</strong>.
+            </p>
           </div>
-          <p className="text-xs text-slate-400">
-            Note: You can retrieve your publishable key from your Supabase dashboard under Settings → API. After editing the `.env` file, please restart your development server.
-          </p>
         </div>
       </div>
     );
